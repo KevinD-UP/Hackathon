@@ -1,0 +1,5 @@
+Bibliothèque d'analyse de sentiment :
+https://github.com/thisandagain/sentiment
+
+Pour visualiser de la data:
+https://www.monterail.com/blog/javascript-libraries-data-visualization
