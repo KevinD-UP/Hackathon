@@ -5,6 +5,7 @@ import { container } from "./src/IoC/container";
 import { InversifyExpressServer } from "inversify-express-utils";
 import cors from "cors"
 import bodyParser from "body-parser";
+import './src/Presentation/AllControllers'
 
 const port = process.env.PORT || 8000 ;
 
