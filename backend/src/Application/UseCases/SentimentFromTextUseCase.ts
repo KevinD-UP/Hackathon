@@ -5,13 +5,11 @@ import { AnalysisResult } from "../../Domain/ValueObjects/AnalysisResult";
 
 @injectable()
 export class SentimentFromTextUseCase {
-
-  constructor(@inject(ISentimentAnalyzer) private sentimentAnalyzer: ISentimentAnalyzer) {
-
-  }
+  constructor(
+    @inject(ISentimentAnalyzer) private sentimentAnalyzer: ISentimentAnalyzer
+  ) {}
 
   execute(text: TextInput): AnalysisResult {
-    return this.sentimentAnalyzer.analyze(text)
+    return this.sentimentAnalyzer.analyze(text);
   }
-
 }

@@ -1,19 +1,17 @@
 import { ValueObject } from "./ValueObject";
 
 type TextInputProps = {
-  text: string
-}
+  text: string;
+};
 
 export class TextInput extends ValueObject {
-  text = ''
+  text = "";
 
   static createFromProps(value: TextInputProps): TextInput {
-
-    const {text} = value
+    const { text } = value;
 
     return TextInput.create<TextInput>({
-      text
-    })
+      text,
+    });
   }
-
 }
