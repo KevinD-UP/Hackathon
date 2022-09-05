@@ -1,5 +1,5 @@
 import { Form, useActionData } from "@remix-run/react";
-import { ActionFunction } from "@remix-run/server-runtime";
+import type { ActionFunction } from "@remix-run/server-runtime";
 import axios from "axios";
 import { json } from "@remix-run/node";
 
@@ -9,11 +9,11 @@ export const action: ActionFunction = async ({ request, params }) => {
   const text = formData.get('text') as string
 
   const result = await axios.post("http://localhost:8000/sentiment/analyzer", { text })
-  return result.data
+  return json(result.data)
 };
 
 
-export default function analyze() {
+export default function Analyze() {
   const actionData = useActionData<typeof action>();
   return (
     <Form method="post">

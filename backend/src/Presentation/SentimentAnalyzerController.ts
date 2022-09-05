@@ -9,6 +9,7 @@ import { inject } from "inversify";
 import { SentimentFromTextUseCase } from "../Application/UseCases/SentimentFromTextUseCase";
 import { Record, String } from "runtypes";
 import { TextInput } from "../Domain/ValueObjects/TextInput";
+import { Request } from "express";
 
 @controller("/sentiment/analyzer")
 export class SentimentAnalyzerController extends BaseHttpController {
