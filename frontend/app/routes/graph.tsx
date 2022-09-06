@@ -1,14 +1,9 @@
-import {
-    XYPlot,
-    XAxis,
-    YAxis,
-    HorizontalGridLines,
-    VerticalGridLines,
-    LineSeries,
-} from 'react-vis';
-import React, { useState, useCallback, CSSProperties, useEffect } from 'react';
+
+import React, {useState, useCallback, CSSProperties, useEffect, } from 'react';
 import { useTransition, animated, AnimatedProps, useSpringRef } from '@react-spring/web';
 import { Link } from "@remix-run/react";
+
+import LineSeriesMouseOver from "~/components/LineSeriesMouseOver";
 
 
 const pages: ((props: AnimatedProps<{ style: CSSProperties }>) => React.ReactElement)[] = [
@@ -17,23 +12,13 @@ const pages: ((props: AnimatedProps<{ style: CSSProperties }>) => React.ReactEle
     ({ style }) => <animated.div style={{ ...style, background: 'lightgreen' }}>C</animated.div>,
 ];
 
-const tickValues = [-20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
+
+
+
+
 
 export default function Graph() {
-    const data = [
-        {
-            x: "11/05",
-            y: 5
-        },
-        {
-            x: "18/05",
-            y: 12
-        },
-        {
-            x: "25/05",
-            y: 16
-        }
-    ];
+
     const [index, set] = useState(0)
     const onClick = useCallback(() => set(state => (state + 1) % 3), [])
     const transRef = useSpringRef()
@@ -48,8 +33,12 @@ export default function Graph() {
         transRef.start()
     }, [index]);
 
+    const [markHoverIndex, setHoverIndex] = useState(-1);
+
     return (
         <div className="flex h-full min-h-screen flex-col justify-between">
+
+
 
             <header className="flex items-center justify-between bg-slate-800 p-4 text-white">
                 <h1 className="text-3xl font-bold">
@@ -77,15 +66,12 @@ export default function Graph() {
 
                     <div className=' w-5/12 flex-col -mt-8 '>
                         <h2 className="text-6xl font-bold text-white text-center -mb-6">Météorologie</h2>
-                        <div className='bg-slate-800 h-full min-h-full rounded-xl  '>
-                            <XYPlot height={300} width={370} margin={{left: 70}} xType='ordinal'>
-                                <VerticalGridLines/>
-                                <HorizontalGridLines/>
-                                <XAxis title="Temps"/>
-                                <YAxis title="Température °C"  tickValues={tickValues} left={-30}/>
-                                <LineSeries data={[{ x: 0, y: 0 }]} style={{ display: 'none' }} />
-                                <LineSeries data={data} curve={'curveMonotoneX'} style={{fill: 'none', strokeWidth: 4}}/>
-                            </XYPlot>
+                        <div className='bg-slate-800 h-full min-h-full rounded-xl flex justify-center items-center '>
+                            <div className='bg-white rounded-xl center'>
+                                <LineSeriesMouseOver/>
+                               
+                            </div>
+
                         </div>
                     </div>
 
