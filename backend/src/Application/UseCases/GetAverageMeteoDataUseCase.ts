@@ -12,7 +12,7 @@ export class GetAverageMeteoDataUseCase {
   async execute(start: Text, end: Text): Promise<MeteoArrayData> {
     const meteoData: MeteoArrayData[] = [];
     for (const station of this.stations) {
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 200));
       meteoData.push(await this.meteoApi.getMeteoData(station, start, end));
     }
 
