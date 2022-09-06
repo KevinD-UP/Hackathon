@@ -13,7 +13,3 @@
     -webkit-user-select: none;
     user-select: none;
 }
-
-.rows {
-    justify-content: space-around;
-}

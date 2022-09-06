@@ -10,17 +10,6 @@ import React, { useState, useCallback, CSSProperties, useEffect } from 'react';
 import { useTransition, animated, AnimatedProps, useSpringRef } from '@react-spring/web';
 import { Link } from "@remix-run/react";
 
-import {timeFormatDefaultLocale} from 'd3-time-format';
-timeFormatDefaultLocale({
-    dateTime    : '%a %b %e %X %Y',
-    date        : '%d/%m/%Y',
-    time        : '%H : %M : %S',
-    periods     : ['AM', 'PM'],
-    days        : ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
-    shortDays   : ['Di', 'Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa'],
-    months      : ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Decembre'],
-    shortMonths : ['Jan', 'Fev', 'Mar', 'Avr', 'Mai', 'Jui', 'Juil', 'Aou', 'Sep', 'Oct', 'Nov', 'Dec']
-});
 
 const pages: ((props: AnimatedProps<{ style: CSSProperties }>) => React.ReactElement)[] = [
     ({ style }) => <animated.div style={{ ...style, background: 'lightpink' }}>A</animated.div>,
@@ -60,33 +49,49 @@ export default function Graph() {
     }, [index]);
 
     return (
-        <div className="flex h-full min-h-screen flex-col">
+        <div className="flex h-full min-h-screen flex-col justify-between">
+
             <header className="flex items-center justify-between bg-slate-800 p-4 text-white">
                 <h1 className="text-3xl font-bold">
                     <Link to=".">Réchauffement Climatique</Link>
                 </h1>
             </header>
-            <main className="flex h-full bg-white">
-                <div className='flex rows'>
-                    <div className='flex fill articles' onClick={onClick}>
-                        {transitions((style, i) => {
-                            const Page1 = pages[i];
-                            const Page2 = pages[i+1] !== undefined ? pages[i+1] : pages[0];
-                            const Page3 = pages[i+2] !== undefined && pages[i+1] !== undefined ? pages[i+2] : pages[i+1] !== undefined ? pages[0] : pages[1];
-                            return [<Page1 style={style} />, <Page2 style={style} />, <Page3 style={style} />];
-                        })}
+
+            <main className="flex  h-full w-full bg-slate-500 justify-center items-center">
+
+                <div className="flex  h-4/5 w-11/12  justify-around ">
+
+                    <div className=' w-5/12 flex-col -mt-8 '>
+                        <h2 className="text-6xl font-bold text-white text-center -mb-6">Anxiété population</h2>
+                        <div className='bg-slate-800 h-full min-h-full rounded-xl  '>
+                            <div className='articles  min-h-1000' onClick={onClick}>
+                                {transitions((style, i) => {
+                                    const Page1 = pages[i];
+                                    const Page2 = pages[i+1] !== undefined ? pages[i+1] : pages[0];
+                                    const Page3 = pages[i+2] !== undefined && pages[i+1] !== undefined ? pages[i+2] : pages[i+1] !== undefined ? pages[0] : pages[1];
+                                    return [<Page1 style={style} />, <Page2 style={style} />, <Page3 style={style} />];
+                                })}
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <XYPlot height={300} width={370} margin={{left: 70}} xType='ordinal'>
-                            <VerticalGridLines/>
-                            <HorizontalGridLines/>
-                            <XAxis title="Temps"/>
-                            <YAxis title="Température °C"  tickValues={tickValues} left={-30}/>
-                            <LineSeries data={[{ x: 0, y: 0 }]} style={{ display: 'none' }} />
-                            <LineSeries data={data} curve={'curveMonotoneX'} style={{fill: 'none', strokeWidth: 4}}/>
-                        </XYPlot>
+
+                    <div className=' w-5/12 flex-col -mt-8 '>
+                        <h2 className="text-6xl font-bold text-white text-center -mb-6">Météorologie</h2>
+                        <div className='bg-slate-800 h-full min-h-full rounded-xl  '>
+                            <XYPlot height={300} width={370} margin={{left: 70}} xType='ordinal'>
+                                <VerticalGridLines/>
+                                <HorizontalGridLines/>
+                                <XAxis title="Temps"/>
+                                <YAxis title="Température °C"  tickValues={tickValues} left={-30}/>
+                                <LineSeries data={[{ x: 0, y: 0 }]} style={{ display: 'none' }} />
+                                <LineSeries data={data} curve={'curveMonotoneX'} style={{fill: 'none', strokeWidth: 4}}/>
+                            </XYPlot>
+                        </div>
                     </div>
+
+
                 </div>
+
             </main>
         </div>
     );
