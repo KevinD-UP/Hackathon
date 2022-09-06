@@ -48,7 +48,7 @@ export default function Graph() {
     }, [index])
     return (
         <div className='flex'>
-            <div className={`flex fill`} onClick={onClick}>
+            <div className={`flex fill articles`} onClick={onClick}>
                 {transitions((style, i) => {
                     const Page = pages[i]
                     return <Page style={style} />
