@@ -67,7 +67,7 @@ export default function Graph() {
                     <div className=' w-5/12 flex-col -mt-8 '>
                         <h2 className="text-6xl font-bold text-white text-center -mb-6">Météorologie</h2>
                         <div className='bg-slate-800 h-full min-h-full rounded-xl flex justify-center items-center '>
-                            <div className='bg-white rounded-xl center'>
+                            <div className='bg-white rounded-xl center h-fit'>
                                 <LineSeriesMouseOver/>
                                
                             </div>
