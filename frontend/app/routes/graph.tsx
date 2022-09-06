@@ -24,7 +24,7 @@ export default function Graph() {
     return (
         <div className='flex flex-row'>
             <div>
-                <XYPlot height={300} width={300}>
+                <XYPlot height={300} width={370} margin={{left: 70}}>
                     <VerticalGridLines/>
                     <HorizontalGridLines/>
                     <XAxis title="Temps"/>
@@ -33,7 +33,7 @@ export default function Graph() {
                 </XYPlot>
             </div>
             <div>
-                <XYPlot height={300} width={300}>
+                <XYPlot height={300} width={370} margin={{left: 70}}>
                     <VerticalGridLines/>
                     <HorizontalGridLines/>
                     <XAxis title="Temps"/>
