@@ -8,7 +8,7 @@ import {
 import { inject } from "inversify";
 import { SentimentFromTextUseCase } from "../Application/UseCases/SentimentFromTextUseCase";
 import { Record, String } from "runtypes";
-import { TextInput } from "../Domain/ValueObjects/TextInput";
+import { Text } from "../Domain/ValueObjects/Text";
 import { Request } from "express";
 
 @controller("/sentiment/analyzer")
@@ -31,7 +31,7 @@ export class SentimentAnalyzerController extends BaseHttpController {
     }
 
     const { text } = validatedRequest.value.body;
-    const argument = TextInput.createFromProps({ text });
+    const argument = Text.createFromProps({ text });
 
     const result = this.sentimentFromTextUseCase.execute(argument);
 
