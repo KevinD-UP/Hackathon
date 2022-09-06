@@ -1,9 +1,8 @@
-import { IMeteostatAPI } from "../Application/Abstraction/IMeteostatAPI";
+import { IMeteoAPI } from "../Application/Abstraction/IMeteoAPI";
 import axios from "axios";
 import { MeteoData } from "../Domain/ValueObjects/MeteoData";
-import { MeteoArrayData } from "../Application/Abstraction/IMeteostatAPI";
-import { inject } from "inversify";
-import { TextInput } from "../Domain/ValueObjects/TextInput";
+import { MeteoArrayData } from "../Application/Abstraction/IMeteoAPI";
+import { Text } from "../Domain/ValueObjects/Text";
 
 type MeteostatResult = {
   meta: {
@@ -12,11 +11,11 @@ type MeteostatResult = {
   data: MeteoData[];
 };
 
-export class MeteostatAPI extends IMeteostatAPI {
+export class MeteostatAPI extends IMeteoAPI {
   async getMeteoData(
     station: string,
-    start: TextInput,
-    end: TextInput
+    start: Text,
+    end: Text
   ): Promise<MeteoArrayData> {
     const config = {
       headers: {
@@ -26,12 +25,10 @@ export class MeteostatAPI extends IMeteostatAPI {
     };
 
     const url = `https://meteostat.p.rapidapi.com/stations/daily?station=${station}&start=${start.text}&end=${end.text}`;
-
     console.log(url);
-
-    const { data } = await axios.get<MeteostatResult>(url, config);
+    const response = await axios.get(url, config);
     return {
-      meteoData: data.data,
+      meteoData: response.data,
     };
   }
 }

@@ -9,7 +9,7 @@ import { inject } from "inversify";
 import { Request } from "express";
 import { InstanceOf, Record, String } from "runtypes";
 import { GetAverageMeteoDataUseCase } from "../Application/UseCases/GetAverageMeteoDataUseCase";
-import { TextInput } from "../Domain/ValueObjects/TextInput";
+import { Text } from "../Domain/ValueObjects/Text";
 import { MeteoData } from "../Domain/ValueObjects/MeteoData";
 //import { Date } from "../Domain/ValueObjects/Date";
 
@@ -35,8 +35,8 @@ export class MeteostatController extends BaseHttpController {
     const { from, to } = validatedRequest.value.body;
 
     const result = await this.GetAverageMeteoDataUseCase.execute(
-      TextInput.createFromProps({ text: from }),
-      TextInput.createFromProps({ text: to })
+      Text.createFromProps({ text: from }),
+      Text.createFromProps({ text: to })
     );
 
     return this.json(result, 200);

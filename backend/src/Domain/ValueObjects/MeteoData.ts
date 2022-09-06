@@ -1,8 +1,8 @@
 import { ValueObject } from "./ValueObject";
-import { TextInput } from "./TextInput";
+import { Text } from "./Text";
 
 type MeteoDataProps = {
-  date: TextInput;
+  date: Text;
   tavg: number;
   tmin: number;
   tmax: number;
@@ -16,7 +16,7 @@ type MeteoDataProps = {
 };
 
 export class MeteoData extends ValueObject {
-  date = TextInput.createDefault();
+  date = Text.createDefault();
   tavg = 0;
   tmin = 0;
   tmax = 0;
