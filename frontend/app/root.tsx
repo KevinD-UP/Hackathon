@@ -11,7 +11,7 @@ import {
 
 import { getUser } from "./session.server";
 import tailwindStylesheetUrl from "./styles/tailwind.css";
-import styles from "./styles/styles.css"
+import styles from "./styles/styles.css";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tailwindStylesheetUrl }, { rel: "stylesheet", href: styles }];
