@@ -4,17 +4,29 @@ import {
     YAxis,
     HorizontalGridLines,
     VerticalGridLines,
-    LineSeries
+    LineSeries,
 } from 'react-vis';
-import React, { useState, useCallback, CSSProperties, useEffect } from 'react'
-import { useTransition, animated, AnimatedProps, useSpringRef } from '@react-spring/web'
-import {Form, Link} from "@remix-run/react";
+import React, { useState, useCallback, CSSProperties, useEffect } from 'react';
+import { useTransition, animated, AnimatedProps, useSpringRef } from '@react-spring/web';
+import { Link } from "@remix-run/react";
+
+import {timeFormatDefaultLocale} from 'd3-time-format';
+timeFormatDefaultLocale({
+    dateTime    : '%a %b %e %X %Y',
+    date        : '%d/%m/%Y',
+    time        : '%H : %M : %S',
+    periods     : ['AM', 'PM'],
+    days        : ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+    shortDays   : ['Di', 'Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa'],
+    months      : ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Decembre'],
+    shortMonths : ['Jan', 'Fev', 'Mar', 'Avr', 'Mai', 'Jui', 'Juil', 'Aou', 'Sep', 'Oct', 'Nov', 'Dec']
+});
 
 const pages: ((props: AnimatedProps<{ style: CSSProperties }>) => React.ReactElement)[] = [
-    ({ style }) => <animated.div style={{ ...style, background: 'lightpink' }}>Article A</animated.div>,
-    ({ style }) => <animated.div style={{ ...style, background: 'lightblue' }}>Article B</animated.div>,
-    ({ style }) => <animated.div style={{ ...style, background: 'lightgreen' }}>Article C</animated.div>,
-]
+    ({ style }) => <animated.div style={{ ...style, background: 'lightpink' }}>A</animated.div>,
+    ({ style }) => <animated.div style={{ ...style, background: 'lightblue' }}>B</animated.div>,
+    ({ style }) => <animated.div style={{ ...style, background: 'lightgreen' }}>C</animated.div>,
+];
 
 const tickValues = [-20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
 
@@ -45,7 +57,8 @@ export default function Graph() {
     })
     useEffect(() => {
         transRef.start()
-    }, [index])
+    }, [index]);
+
     return (
         <div className="flex h-full min-h-screen flex-col">
             <header className="flex items-center justify-between bg-slate-800 p-4 text-white">
@@ -76,5 +89,5 @@ export default function Graph() {
                 </div>
             </main>
         </div>
-    )
+    );
 }

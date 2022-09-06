@@ -12,9 +12,10 @@ import {
 import { getUser } from "./session.server";
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import styles from "./styles/styles.css";
+import reactVisStyles from "react-vis/dist/style.css";
 
 export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: tailwindStylesheetUrl }, { rel: "stylesheet", href: styles }];
+  return [{ rel: "stylesheet", href: tailwindStylesheetUrl }, { rel: "stylesheet", href: styles }, {rel : "stylesheet", href : reactVisStyles}];
 };
 
 export const meta: MetaFunction = () => ({
