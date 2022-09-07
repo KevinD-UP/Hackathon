@@ -1,42 +1,22 @@
 import React from "react";
+import Article from "~/components/Article";
 
 export default function ArticleCarousel(){
     return (
-        <div id="carouselExampleCaptions" className="carousel slide relative py-36" data-bs-ride="carousel">
+        <div id="carouselExampleCaptions" className="carousel slide relative py-6" data-bs-ride="carousel">
             <div className="carousel-inner relative w-full overflow-hidden">
-                <div className="carousel-item active relative float-left w-full">
-                    <img
-                        src="https://mdbootstrap.com/img/Photos/Slides/img%20(15).jpg"
-                        className="block w-full"
-                        alt="..."
-                    />
-                    <div className="carousel-caption hidden md:block absolute text-center">
-                        <h5 className="text-xl">First slide label</h5>
-                        <p>Some representative placeholder content for the first slide.</p>
-                    </div>
-                </div>
-                <div className="carousel-item relative float-left w-full">
-                    <img
-                        src="https://mdbootstrap.com/img/Photos/Slides/img%20(22).jpg"
-                        className="block w-full"
-                        alt="..."
-                    />
-                    <div className="carousel-caption hidden md:block absolute text-center">
-                        <h5 className="text-xl">Second slide label</h5>
-                        <p>Some representative placeholder content for the second slide.</p>
-                    </div>
-                </div>
-                <div className="carousel-item relative float-left w-full">
-                    <img
-                        src="https://mdbootstrap.com/img/Photos/Slides/img%20(23).jpg"
-                        className="block w-full"
-                        alt="..."
-                    />
-                    <div className="carousel-caption hidden md:block absolute text-center">
-                        <h5 className="text-xl">Third slide label</h5>
-                        <p>Some representative placeholder content for the third slide.</p>
-                    </div>
-                </div>
+                <Article img={"https://mdbootstrap.com/img/Photos/Slides/img%20(15).jpg"}
+                         title={"Incendie dans l'Amazonie"}
+                         description={"Some representative placeholder content for the first slide."}
+                         isActive={true}/>
+                <Article img={"https://mdbootstrap.com/img/Photos/Slides/img%20(22).jpg"}
+                         title={"Inondations en France"}
+                         description={"Some representative placeholder content for the second slide."}
+                         isActive={false}/>
+                <Article img={"https://mdbootstrap.com/img/Photos/Slides/img%20(23).jpg"}
+                         title={"La fonte des glaciers"}
+                         description={"Some representative placeholder content for the third slide."}
+                         isActive={false}/>
             </div>
             <button
                 className="carousel-control-prev absolute top-0 bottom-0 flex items-center justify-center p-0 text-center border-0 hover:outline-none hover:no-underline focus:outline-none focus:no-underline left-0"
