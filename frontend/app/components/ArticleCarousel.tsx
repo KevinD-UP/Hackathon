@@ -3,7 +3,7 @@ import Article from "~/components/Article";
 
 export default function ArticleCarousel(){
     return (
-        <div id="carouselExampleCaptions" className="carousel slide relative py-12" data-bs-ride="carousel">
+        <div id="carouselExampleCaptions" className="carousel slide relative py-6" data-bs-ride="carousel">
             <div className="carousel-inner relative w-full overflow-hidden">
                 <Article img={"https://mdbootstrap.com/img/Photos/Slides/img%20(15).jpg"}
                          title={"Incendie dans l'Amazonie"}
