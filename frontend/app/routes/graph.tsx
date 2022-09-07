@@ -3,6 +3,7 @@ import { useTransition, animated, AnimatedProps, useSpringRef } from '@react-spr
 import {Link, useLoaderData} from "@remix-run/react";
 import LineSeriesMouseOver from "~/components/LineSeriesMouseOver";
 import ArticleCarousel from "~/components/ArticleCarousel";
+import LevelAnxiety from "~/components/LevelAnxiety";
 import axios from "axios";
 import {LoaderFunction} from "@remix-run/server-runtime";
 import {json} from "@remix-run/node";
@@ -44,6 +45,7 @@ export default function Graph() {
                       <div className='  flex-col -mt-8 h-1/2 '>
                           <h2 className="text-4xl font-bold text-white text-center -mb-4">Anxiété population</h2>
                           <div className='bg-slate-800 h-full min-h-full rounded-xl'>
+                              <LevelAnxiety score={11}/>
                               <ArticleCarousel />
                           </div>
                       </div>
