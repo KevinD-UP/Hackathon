@@ -41,4 +41,26 @@ export class MeteostatController extends BaseHttpController {
 
     return this.json(result, 200);
   }
+
+  @httpGet("/:from/:to")
+  async getAllMeteostatParams(
+    @request() req: Request
+  ): Promise<results.JsonResult> {
+    const validatedRequest = Record({
+      params: Record({ from: String, to: String }),
+    }).validate(req);
+
+    if (!validatedRequest.success) {
+      return this.json(validatedRequest, 400);
+    }
+
+    const { from, to } = validatedRequest.value.params;
+
+    const result = await this.GetAverageMeteoDataUseCase.execute(
+      Text.createFromProps({ text: from }),
+      Text.createFromProps({ text: to })
+    );
+
+    return this.json(result, 200);
+  }
 }
