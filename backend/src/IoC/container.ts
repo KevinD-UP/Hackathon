@@ -12,7 +12,7 @@ import { MeteostatAPI } from "../Infrastructure/MeteostatAPI";
 import { GetAverageMeteoDataUseCase } from "../Application/UseCases/GetAverageMeteoDataUseCase";
 import { GetDailyMeteoDataUseCase } from "../Application/UseCases/GetDailyMeteoDataUseCase";
 import { GetMonthlyMeteoDataUseCase } from "../Application/UseCases/GetMonthlyMeteoDataUseCase";
-import {GetRecordTemperatureInFranceUseCase} from "../Application/UseCases/GetRecordTemperatureInFranceUseCase";
+import { GetMonthRecordTemperatureUseCase } from "../Application/UseCases/GetMonthRecordTemperatureUseCase";
 
 const container = new Container();
 container.bind(ISentimentAnalyzer).to(SentimentAnalyzer);
@@ -24,5 +24,5 @@ container.bind(IMeteoAPI).to(MeteostatAPI);
 container.bind(GetAverageMeteoDataUseCase).toSelf();
 container.bind(GetDailyMeteoDataUseCase).toSelf();
 container.bind(GetMonthlyMeteoDataUseCase).toSelf();
-container.bind(GetRecordTemperatureInFranceUseCase).toSelf();
+container.bind(GetMonthRecordTemperatureUseCase).toSelf();
 export { container };

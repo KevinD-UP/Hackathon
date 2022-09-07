@@ -8,14 +8,14 @@ import {
 import { inject } from "inversify";
 import { Request } from "express";
 import { InstanceOf, Record, String } from "runtypes";
-import { GetRecordTemperatureInFranceUseCase } from "../Application/UseCases/GetRecordTemperatureInFranceUseCase";
+import { GetMonthRecordTemperatureUseCase } from "../Application/UseCases/GetMonthRecordTemperatureUseCase";
 import { Text } from "../Domain/ValueObjects/Text";
 
 @controller("/monthrecordtemperature")
 export class RecordTemperatureInFranceController extends BaseHttpController {
   constructor(
-    @inject(GetRecordTemperatureInFranceUseCase)
-    private GetRecordTemperatureInFranceUseCase: GetRecordTemperatureInFranceUseCase
+    @inject(GetMonthRecordTemperatureUseCase)
+    private GetMonthRecordTemperatureUseCase: GetMonthRecordTemperatureUseCase
   ) {
     super();
   }
@@ -34,7 +34,7 @@ export class RecordTemperatureInFranceController extends BaseHttpController {
 
     const { start, to } = validatedRequest.value.params;
 
-    const result = await this.GetRecordTemperatureInFranceUseCase.execute(
+    const result = await this.GetMonthRecordTemperatureUseCase.execute(
       Text.createFromProps({ text: start }),
       Text.createFromProps({ text: to })
     );

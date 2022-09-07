@@ -4,7 +4,7 @@ import { Text } from "../../Domain/ValueObjects/Text";
 type Temperature = { month: number; year: number; temperature: number };
 
 @injectable()
-export class GetRecordTemperatureInFranceUseCase {
+export class GetMonthRecordTemperatureUseCase {
   private record = [
     { year: 2018, temperature: 8.4 },
     { year: 1990, temperature: 8.4 },
