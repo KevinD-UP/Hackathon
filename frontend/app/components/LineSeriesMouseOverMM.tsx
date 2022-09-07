@@ -24,7 +24,7 @@ interface IState {
     items: any;
 }
 
-export default  class LineSeriesMouseOver extends Component<IProps, IState> {
+export default  class LineSeriesMouseOverMM extends Component<IProps, IState> {
 
     constructor(props: IProps) {
 
@@ -57,12 +57,9 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
         const {index} = this.state;
         const {items} = this.state;
 
-        const yAxis = "°C";
+        const yAxis = "mm";
 
         const maxTicksX = 15;
-
-        const tickValuesYAxis = [-20,-15,-10,-5, 0,5,10,15,20,25,30,35,40,45];
-        const tickValuesXGrid = [-15,-10,-5,0,5,10,15,20,25,30,35,40];
 
         const tickValuesXAxis = Array();
         const tickDomainXAxis = Array();
@@ -104,6 +101,8 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
             }
         }
 
+        //console.log(lineData);
+
         return(
 
             <div className='flex bg-slate-300 max-h-full rounded-xl '>
@@ -115,16 +114,16 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
                 <div className=' rounded-xl  bg-white min-w-fit flex-1 mr-0 flex justify-center overflow-hidden'>
 
                     <XYPlot height={300} width={800} margin={{top:20}} xDomain={tickDomainXAxis}
-                            yType='linear' yDomain={[-20, 45]} xType='ordinal'
+                            yType='linear'  xType='ordinal'
                             onMouseLeave={() => this.setState({index: -1})}>
 
                         <VerticalGridLines  style={{strokeWidth: 2, stroke: "lightgrey"}}/>
                         <HorizontalGridLines style={{strokeWidth: 2, stroke: "lightgrey"}} innerWidth={770} left={35}
-                                             tickValues={tickValuesXGrid}/>
+                                            />
 
-                        <XAxis style={{line: {stroke: "black"}, ticks: {color: '#000', fontSize: '12px'}}} title="Temps" on0={true}
+                        <XAxis style={{line: {stroke: "black"}, ticks: {color: '#000', fontSize: '12px'}}} title="Temps"
                                innerWidth={800} tickSizeInner={0} tickValues={tickValuesXAxis}/>
-                        <YAxis style={{line: {stroke: "black"} , title: {fontSize: '16px', color:'#000'}}} tickValues={tickValuesYAxis}
+                        <YAxis style={{line: {stroke: "black"} , title: {fontSize: '16px', color:'#000'}}}
                                title={yAxis} tickSizeInner={0}/>
 
                         {lineData.map((d, i) => (<LineSeries
