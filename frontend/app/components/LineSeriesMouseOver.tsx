@@ -10,17 +10,22 @@ import {
     YAxis
 } from "react-vis";
 
+import Moment from "moment";
+import moment from "moment";
+
 interface IProps {
     lineDataRaw : any;
     yAxis : string;
+    begin : string;
+    end : string;
 }
 
 interface IState {
+    period : string;
     yAxis: string;
     index: Number;
     items: any;
 }
-
 
 export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
@@ -33,6 +38,7 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
         super(props);
         this.state = {
+            period : "month",
             yAxis : props.yAxis,
             index : -1 ,
             items : items
@@ -48,7 +54,6 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
     render(){
 
-        console.log(this.state.items);
         const lineData = Array();
         for(let i in this.props.lineDataRaw){
             lineData.push(this.props.lineDataRaw[i][0]);
@@ -56,10 +61,35 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
         const {index} = this.state;
         const {items} = this.state;
 
+        const maxTicksX = 10;
+
         const tickValuesYAxis = [-30,-25,-20,-15,-10,-5, 5,10,15,20,25,30,35,40,45,50];
         const tickValuesXGrid = [-25,-20,-15,-10,-5,0,5,10,15,20,25,30,35,40,45,50];
 
-        console.log(items);
+        const tickValuesXAxis = Array();
+
+        let frequenceTicks = 1;
+
+        const momentBegin = moment(new Date(this.props.begin));
+        const momentEnd = moment(new Date(this.props.end));
+
+        if(this.state.period === "month"){
+            const numberMonth = momentEnd.diff(momentBegin,"months");
+            frequenceTicks = Math.ceil(numberMonth/maxTicksX);
+
+            /*while(tickValuesXAxis.length <numberMonth && tickValuesXAxis.length < maxTicksX){
+
+                if(i==0){
+                    tickValuesXAxis.push()
+                }
+
+            }*/
+
+            console.log(momentBegin.month());
+            let i=0;
+
+
+        }
 
         return(
 
@@ -71,16 +101,18 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
                 <div className=' rounded-xl  bg-white min-w-fit flex-1 mr-0 flex justify-center overflow-hidden'>
 
-                    <XYPlot height={310} width={870}  yType='linear' yDomain={[-30, 55]} xType={"ordinal"}
+                    <XYPlot height={310} width={870}
+                            yType='linear' yDomain={[-30, 55]} xType='ordinal'
                             onMouseLeave={() => this.setState({index: -1})}>
 
                         <VerticalGridLines tickTotal={5000} style={{strokeWidth: 2, stroke: "lightgrey"}}/>
                         <HorizontalGridLines style={{strokeWidth: 2, stroke: "lightgrey"}} innerWidth={770} left={75}
-                                             tickValues={tickValuesXGrid}/>
+                                             />
 
                         <XAxis style={{line: {stroke: "black"}}} title="Temps" on0={true}
                                innerWidth={800} tickSizeInner={0}/>
                         <YAxis style={{line: {stroke: "black"}}} on0={true} tickValues={tickValuesYAxis}
+                               orientation={'left'}
                                tickFormat={v => `${v} ${this.state.yAxis}`} tickSizeInner={0}/>
 
                         {lineData.map((d, i) => (<LineSeries
@@ -100,7 +132,7 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
                             stroke="transparent"
                             style={{strokeWidth: 10}}/>))}
 
-                        <MarkSeries data={[{x: 0, y: 0}]} style={{display: 'none'}}/>
+
                     </XYPlot>
 
                 </div>
