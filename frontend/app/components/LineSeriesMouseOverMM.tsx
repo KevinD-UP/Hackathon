@@ -16,6 +16,7 @@ interface IProps {
     lineDataRaw : any;
     begin : string;
     end : string;
+    period: string;
 }
 
 interface IState {
@@ -35,7 +36,7 @@ export default  class LineSeriesMouseOverMM extends Component<IProps, IState> {
 
         super(props);
         this.state = {
-            period : "month",
+            period : this.props.period,
             index : -1 ,
             items : items
         };
@@ -74,7 +75,7 @@ export default  class LineSeriesMouseOverMM extends Component<IProps, IState> {
             frequenceTicks = Math.ceil(numberMonth/maxTicksX);
 
             let i=1;
-            while(tickValuesXAxis.length <numberMonth && tickValuesXAxis.length < maxTicksX){
+            while( tickValuesXAxis.length < maxTicksX){
                 const dateString = momentBegin.month()+1 + "/" + momentBegin.year();
                 tickDomainXAxis.push(dateString);
                 if(i==1){
@@ -90,8 +91,9 @@ export default  class LineSeriesMouseOverMM extends Component<IProps, IState> {
             frequenceTicks = Math.ceil(numberDay/maxTicksX);
 
             let i=1;
-            while(tickValuesXAxis.length <numberDay && tickValuesXAxis.length < maxTicksX){
-                const dateStringDay = momentBegin.day() + "/" +  momentBegin.month()+1 ;
+            while( tickValuesXAxis.length < maxTicksX){
+                const dateStringDay = momentBegin.date() + "/" +  momentBegin.month()+1 +
+                    "/" + momentBegin.year().toString().slice(2);
                 tickDomainXAxis.push(dateStringDay);
                 if(i==1){
                     tickValuesXAxis.push(dateStringDay);
@@ -101,7 +103,7 @@ export default  class LineSeriesMouseOverMM extends Component<IProps, IState> {
             }
         }
 
-        //console.log(lineData);
+        console.log(lineData);
 
         return(
 

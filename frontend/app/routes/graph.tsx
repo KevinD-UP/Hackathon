@@ -9,15 +9,16 @@ import type {LoaderFunction} from "@remix-run/server-runtime";
 import {json} from "@remix-run/node";
 import France from "~/components/france";
 
-const begin = "2000-03-01";
-const end = "2022-03-01";
-const period ="month";
+const begin = "2020-01-01";
+const end = "2021-02-01";
+const period ="day";
+const meteoPath = period == "day" ? "daily" : "monthly";
 
 export const loader: LoaderFunction = async () => {
     const date = new Date()
     const formattedDate = date.toISOString().split('T')[0]
     const articlesAxios = await axios.get(`http://localhost:8000/news/${formattedDate}/${formattedDate}`)
-    const meteoAxios = await axios.get(`http://localhost:8000/monthlymeteostat/07156/${begin}/${end}`)
+    const meteoAxios = await axios.get(`http://localhost:8000/${meteoPath}meteostat/07156/${begin}/${end}`)
     if(articlesAxios.status === 200 && meteoAxios.status === 200){
         return json({meteo: meteoAxios.data, articles: articlesAxios.data})
     }
@@ -26,7 +27,17 @@ export const loader: LoaderFunction = async () => {
 
 function getMonthDate(dateString : string){
     const parsedDateString = new Date(dateString);
-    const constructedString = parsedDateString.getMonth() + 1 + "/" + parsedDateString.getFullYear();
+    let constructedString;
+    if(period == "month"){
+        constructedString = parsedDateString.getMonth() + 1 + "/" + parsedDateString.getFullYear();
+    }
+
+    else if(period == "day"){
+        constructedString = parsedDateString.getDate()
+            + "/" + parsedDateString.getMonth() + 1 + "/"
+        + parsedDateString.getFullYear().toString().slice(2);
+    }
+
     return constructedString;
 }
 
@@ -42,20 +53,21 @@ export default function Graph() {
     const snowData= Array();
 
     for (let i in meteo){
+        let shortDate = getMonthDate(meteo[i].date);
         if(meteo[i].tavg !== null){
-            avgTemperatureData.push({y: meteo[i].tavg , x: getMonthDate(meteo[i].date)});
+            avgTemperatureData.push({y: meteo[i].tavg , x: shortDate});
         }
         if(meteo[i].tmin !== null){
-            minTemperatureData.push({y: meteo[i].tmin , x: getMonthDate(meteo[i].date)});
+            minTemperatureData.push({y: meteo[i].tmin , x: shortDate});
         }
         if(meteo[i].tmax !== null){
-            maxTemperatureData.push({y: meteo[i].tmax , x: getMonthDate(meteo[i].date)});
+            maxTemperatureData.push({y: meteo[i].tmax , x: shortDate});
         }
         if(meteo[i].prcp !==null){
-            prcpData.push({y: meteo[i].prcp , x: getMonthDate(meteo[i].date)});
+            prcpData.push({y: meteo[i].prcp , x: shortDate});
         }
         if(meteo[i].snow !==null){
-            snowData.push({y: meteo[i].snow , x: getMonthDate(meteo[i].date)});
+            snowData.push({y: meteo[i].snow , x: shortDate});
         }
 
     }
@@ -69,7 +81,6 @@ export default function Graph() {
 
     const lineDataRaw = [avgTempTuple, minTempTuple, maxTempTuple];
     const lineDataRawMM = [prcpTuple, snowTuple];
-
 
     return (
       <div className="flex h-full min-h-screen flex-col justify-between">
@@ -102,10 +113,10 @@ export default function Graph() {
                       <h2 className="text-4xl font-bold text-white text-center -mb-4">Météorologie</h2>
                       <div className='bg-slate-800 h-full  rounded-xl flex flex-col  justify-around  '>
                           <div className='h-2/5  w-full'>
-                              <LineSeriesMouseOver lineDataRaw={lineDataRaw}  begin={begin} end={end}/>
+                              <LineSeriesMouseOver lineDataRaw={lineDataRaw}  period={period} begin={begin} end={end}/>
                           </div>
                           <div className='h-2/5 w-full'>
-                              <LineSeriesMouseOverMM lineDataRaw={lineDataRawMM}  begin={begin} end={end}/>
+                              <LineSeriesMouseOverMM lineDataRaw={lineDataRawMM}  period={period} begin={begin} end={end}/>
                           </div>
                       </div>
                   </div>
