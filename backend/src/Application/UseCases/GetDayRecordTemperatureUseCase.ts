@@ -385,9 +385,6 @@ export class GetDayRecordTemperatureUseCase {
   }
 
   async execute(start: Text, to: Text): Promise<Temperature[]> {
-    const splitStart = start.text.split("-");
-    const splitTo = to.text.split("-");
-
     const startInt = this.dayOfYear(new Date(start.text)) - 1;
     const endInt = this.dayOfYear(new Date(to.text)) - 1;
     const result: Temperature[] = [];
