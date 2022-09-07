@@ -16,6 +16,7 @@ interface IProps {
     lineDataRaw : any;
     begin : string;
     end : string;
+    period: string;
 }
 
 interface IState {
@@ -35,7 +36,7 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
         super(props);
         this.state = {
-            period : "month",
+            period : this.props.period,
             index : -1 ,
             items : items
         };
@@ -94,7 +95,8 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
             let i=1;
             while(tickValuesXAxis.length <numberDay && tickValuesXAxis.length < maxTicksX){
-                const dateStringDay = momentBegin.day() + "/" +  momentBegin.month()+1 ;
+                const dateStringDay = momentBegin.date() + "/" +  momentBegin.month()+1 +
+                    "/" + momentBegin.year().toString().slice(2);
                 tickDomainXAxis.push(dateStringDay);
                 if(i==1){
                     tickValuesXAxis.push(dateStringDay);
