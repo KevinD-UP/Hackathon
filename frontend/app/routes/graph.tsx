@@ -13,6 +13,7 @@ export const loader: LoaderFunction = async () => {
     const { data } = await axios.get(`http://localhost:8000/news/${formattedDate}/${formattedDate}`)
     return json(data)
 };
+import France from "~/components/france";
 
 export default function Graph() {
     const loadedData = useLoaderData()
@@ -29,34 +30,44 @@ export default function Graph() {
     const yAxis = "°C";
 
     return (
-        <div className="flex h-full min-h-screen flex-col justify-between">
-            <header className="flex items-center justify-between bg-slate-800 p-4 text-white">
-                <h1 className="text-3xl font-bold">
-                    <Link to=".">Réchauffement Climatique</Link>
-                </h1>
-            </header>
-            <main className="flex  h-full w-full bg-slate-500 justify-center items-center">
-                <div className="flex  h-4/5 w-11/12  justify-around ">
-                    <div className=' w-3/12 flex-col -mt-8 '>
-                        <h2 className="text-4xl font-bold text-white text-center -mb-4">Anxiété population</h2>
-                        <div className='bg-slate-800 h-full min-h-full rounded-xl'>
-                            <ArticleCarousel />
-                        </div>
-                    </div>
+      <div className="flex h-full min-h-screen flex-col justify-between">
+          <header className="flex items-center justify-between bg-slate-800 p-4 text-white">
+              <h1 className="text-3xl font-bold">
+                  <Link to=".">Réchauffement Climatique</Link>
+              </h1>
+          </header>
 
-                    <div className=' w-7/12 flex-col -mt-8 '>
-                        <h2 className="text-4xl font-bold text-white text-center -mb-4">Météorologie</h2>
-                        <div className='bg-slate-800 h-full  rounded-xl flex flex-col  justify-around  '>
-                            <div className='h-2/5  w-full'>
-                                <LineSeriesMouseOver lineDataRaw={lineDataRaw} yAxis={yAxis}/>
-                            </div>
-                            <div className='h-2/5 w-full'>
-                                <LineSeriesMouseOver lineDataRaw={lineDataRaw} yAxis={yAxis}/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </main>
-        </div>
+          <main className="flex  h-full w-full bg-slate-500 justify-center items-center">
+              <div className="flex  h-4/5 w-11/12  justify-around ">
+
+                  <div className='flex-col w-3/12 space-y-14'>
+                      <div className='  flex-col -mt-8 h-1/2 '>
+                          <h2 className="text-4xl font-bold text-white text-center -mb-4">Anxiété population</h2>
+                          <div className='bg-slate-800 h-full min-h-full rounded-xl'>
+                              <ArticleCarousel />
+                          </div>
+                      </div>
+                      <div className=' flex-col -mt-8 h-1/2'>
+                          <div className='bg-white h-full min-h-full rounded-xl'>
+                            <France />
+                          </div>
+                      </div>
+
+                  </div>
+
+                  <div className=' w-7/12 flex-col -mt-8 '>
+                      <h2 className="text-4xl font-bold text-white text-center -mb-4">Météorologie</h2>
+                      <div className='bg-slate-800 h-full  rounded-xl flex flex-col  justify-around  '>
+                          <div className='h-2/5  w-full'>
+                              <LineSeriesMouseOver lineDataRaw={lineDataRaw} yAxis={yAxis}/>
+                          </div>
+                          <div className='h-2/5 w-full'>
+                              <LineSeriesMouseOver lineDataRaw={lineDataRaw} yAxis={yAxis}/>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </main>
+      </div>
     );
 }
