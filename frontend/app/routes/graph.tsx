@@ -6,16 +6,15 @@ import LineSeriesMouseOver from "~/components/LineSeriesMouseOver";
 
 export default function Graph() {
 
-    const [markHoverIndex, setHoverIndex] = useState(-1);
-    const data1 = [...Array(10).keys()].map(x => ({x, y : Math.random() *10}));
-    const data2 = [...Array(10).keys()].map(x => ({x, y : Math.random() *10}));
-    const data3 = [...Array(10).keys()].map(x => ({x, y : Math.random() *10}));
+    const data1 = [...Array(10).keys()].map(x => ({x, y : Math.random() *50}));
+    const data2 = [...Array(10).keys()].map(x => ({x, y : Math.random() *-40}));
+    const data3 = [...Array(10).keys()].map(x => ({x, y : Math.random() *20}));
 
-    const data1raw = [data1, "tmpMax"];
+    const data1raw = [data1, "tmpMax Montsouris"];
     const data2raw = [data2, "tpmMin"];
     const data3raw = [data3, "tmpAvg"];
 
-    const lineDataRaw = [data1raw, data2raw, data3raw];
+    const lineDataRaw = [data1raw, data2raw, data3raw, data1raw, data2raw, data3raw, data2raw, data3raw, data1raw, data3raw];
     const yAxis = "°C";
 
     return (
@@ -33,8 +32,8 @@ export default function Graph() {
 
                 <div className="flex  h-4/5 w-11/12  justify-around ">
 
-                    <div className=' w-5/12 flex-col -mt-8 '>
-                        <h2 className="text-6xl font-bold text-white text-center -mb-6">Anxiété population</h2>
+                    <div className=' w-3/12 flex-col -mt-8 '>
+                        <h2 className="text-4xl font-bold text-white text-center -mb-4">Anxiété population</h2>
                         <div className='bg-slate-800 h-full min-h-full rounded-xl'>
                             <div className='bg-white'>
                             <div id="default-carousel" className="relative" data-carousel="static">
@@ -75,12 +74,12 @@ export default function Graph() {
                         </div>
                     </div>
 
-                    <div className=' w-5/12 flex-col -mt-8 '>
-                        <h2 className="text-6xl font-bold text-white text-center -mb-6">Météorologie</h2>
-                        <div className='bg-slate-800 h-full min-h-full rounded-xl flex justify-center items-center '>
-                            <div className='bg-white rounded-xl center h-fit'>
+                    <div className=' w-7/12 flex-col -mt-8 '>
+                        <h2 className="text-4xl font-bold text-white text-center -mb-4">Météorologie</h2>
+                        <div className='bg-slate-800 h-full min-h-full rounded-xl flex items-center justify-center '>
+                            <div className='bg-white rounded-xl center h-fit w-fit'>
                                 <LineSeriesMouseOver lineDataRaw={lineDataRaw} yAxis={yAxis}/>
-                               
+
                             </div>
 
                         </div>
