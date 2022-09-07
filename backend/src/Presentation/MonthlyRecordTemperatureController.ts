@@ -12,7 +12,7 @@ import { GetMonthRecordTemperatureUseCase } from "../Application/UseCases/GetMon
 import { Text } from "../Domain/ValueObjects/Text";
 
 @controller("/monthrecordtemperature")
-export class RecordTemperatureInFranceController extends BaseHttpController {
+export class MonthlyRecordTemperatureController extends BaseHttpController {
   constructor(
     @inject(GetMonthRecordTemperatureUseCase)
     private GetMonthRecordTemperatureUseCase: GetMonthRecordTemperatureUseCase
