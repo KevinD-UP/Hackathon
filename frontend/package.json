@@ -52,7 +52,8 @@
     "react-dom": "^18.2.0",
     "react-spring": "^9.5.2",
     "react-vis": "^1.11.7",
-    "tiny-invariant": "^1.2.0"
+    "tiny-invariant": "^1.2.0",
+    "tw-elements": "^1.0.0-alpha12"
   },
   "devDependencies": {
     "@faker-js/faker": "^7.4.0",
