@@ -7,6 +7,16 @@ import LineSeriesMouseOver from "~/components/LineSeriesMouseOver";
 export default function Graph() {
 
     const [markHoverIndex, setHoverIndex] = useState(-1);
+    const data1 = [...Array(10).keys()].map(x => ({x, y : Math.random() *10}));
+    const data2 = [...Array(10).keys()].map(x => ({x, y : Math.random() *10}));
+    const data3 = [...Array(10).keys()].map(x => ({x, y : Math.random() *10}));
+
+    const data1raw = [data1, "tmpMax"];
+    const data2raw = [data2, "tpmMin"];
+    const data3raw = [data3, "tmpAvg"];
+
+    const lineDataRaw = [data1raw, data2raw, data3raw];
+    const yAxis = "°C";
 
     return (
         <div className="flex h-full min-h-screen flex-col justify-between">
@@ -48,7 +58,7 @@ export default function Graph() {
                                 <button type="button" className="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
                                     <span className="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
                                         <svg aria-hidden="true" className="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
                                         </svg>
                                         <span className="sr-only">Previous</span>
                                     </span>
@@ -56,7 +66,7 @@ export default function Graph() {
                                 <button type="button" className="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
                                     <span className="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
                                         <svg aria-hidden="true" className="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
                                         </svg>
                                         <span className="sr-only">Next</span>
                                     </span>
@@ -69,7 +79,7 @@ export default function Graph() {
                         <h2 className="text-6xl font-bold text-white text-center -mb-6">Météorologie</h2>
                         <div className='bg-slate-800 h-full min-h-full rounded-xl flex justify-center items-center '>
                             <div className='bg-white rounded-xl center h-fit'>
-                                <LineSeriesMouseOver/>
+                                <LineSeriesMouseOver lineDataRaw={lineDataRaw} yAxis={yAxis}/>
                                
                             </div>
 

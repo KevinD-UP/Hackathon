@@ -11,9 +11,12 @@ import {
 } from "react-vis";
 
 interface IProps {
+    lineDataRaw : any;
+    yAxis : string;
 }
 
 interface IState {
+    yAxis: string;
     index: Number;
     items: any;
 }
@@ -23,29 +26,18 @@ const data2 = [...Array(10).keys()].map(x => ({x, y : Math.random() *10}));
 const data3 = [...Array(10).keys()].map(x => ({x, y : Math.random() *10}));
 
 
-const data1raw = [data1, "tmpMax"];
-const data2raw = [data2, "tpmMin"];
-const data3raw = [data3, "tmpAvg"];
-
-const lineDataRaw = [data1raw, data2raw, data3raw]
-
-const yAxis = "Température °C";
-
-
-
-
-
 export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
     constructor(props: IProps) {
 
         const items = Array();
-        for(let i in lineDataRaw){
-            items.push({title : lineDataRaw[i][1], disabled : false})
+        for(let i in props.lineDataRaw){
+            items.push({title : props.lineDataRaw[i][1], disabled : false})
         }
 
         super(props);
         this.state = {
+            yAxis : props.yAxis,
             index : -1 ,
             items : items
         };
@@ -61,7 +53,6 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
     render(){
 
         console.log(this.state.items);
-        const tickValues = [-20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
         const lineData = [data1, data2, data3];
         const {index} = this.state;
         const {items} = this.state;
@@ -75,14 +66,15 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
             <DiscreteColorLegend items={items} onItemClick={this.clickHandler}/>
 
-                <XYPlot height={500} width={570} xType='ordinal'
+                <XYPlot height={500} width={570} yType='linear' yDomain={[-20,50]} xType={"ordinal"}
                       onMouseLeave={() => this.setState({index: -1})}>
 
-                <VerticalGridLines style={{strokeWidth: 2, stroke: "lightblue"}}/>
-                <HorizontalGridLines style={{strokeWidth: 2, stroke: "lightblue"}}/>
+                <VerticalGridLines style={{strokeWidth: 2, stroke: "lightgrey"}} />
+                <HorizontalGridLines style={{strokeWidth: 2, stroke: "lightgrey"}} left={65} innerWidth={500}/>
 
-                <XAxis style={{line: {stroke: "black"}}} title="Temps"/>
-                <YAxis style={{line: {stroke: "black"}}} title={`${yAxis}`} tickValues={tickValues}/>
+                <XAxis style={{line: {stroke: "black"}}} title="Temps" on0={true} innerWidth={500} left={65} tickSizeInner={0}    />
+                <YAxis style={{line: {stroke: "black"}}} on0={true}
+                       tickFormat={v  => `${v} ${this.state.yAxis}`}  tickSizeOuter={0}/>
 
                 {lineData.map((d, i) => (<LineSeries
                     data={d} key={`${i}`} style={{strokeWidth: 4}}
