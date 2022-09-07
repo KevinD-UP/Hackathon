@@ -11,4 +11,16 @@ export abstract class IMeteoAPI {
     start: Text,
     end: Text
   ): Promise<MeteoArrayData>;
+
+  abstract getDailyMeteoData(
+    station: Text,
+    start: Text,
+    end: Text
+  ): Promise<MeteoArrayData>;
+
+  abstract getMonthlyMeteoData(
+    station: Text,
+    start: Text,
+    end: Text
+  ): Promise<MeteoArrayData>;
 }

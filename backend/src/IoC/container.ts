@@ -10,6 +10,8 @@ import { GetNewsFromDateUseCase } from "../Application/UseCases/GetNewsFromDateU
 import { IMeteoAPI } from "../Application/Abstraction/IMeteoAPI";
 import { MeteostatAPI } from "../Infrastructure/MeteostatAPI";
 import { GetAverageMeteoDataUseCase } from "../Application/UseCases/GetAverageMeteoDataUseCase";
+import { GetDailyMeteoDataUseCase } from "../Application/UseCases/GetDailyMeteoDataUseCase";
+import { GetMonthlyMeteoDataUseCase } from "../Application/UseCases/GetMonthlyMeteoDataUseCase";
 
 const container = new Container();
 container.bind(ISentimentAnalyzer).to(SentimentAnalyzer);
@@ -19,4 +21,6 @@ container.bind(GetNewsFromDateUseCase).toSelf();
 
 container.bind(IMeteoAPI).to(MeteostatAPI);
 container.bind(GetAverageMeteoDataUseCase).toSelf();
+container.bind(GetDailyMeteoDataUseCase).toSelf();
+container.bind(GetMonthlyMeteoDataUseCase).toSelf();
 export { container };
