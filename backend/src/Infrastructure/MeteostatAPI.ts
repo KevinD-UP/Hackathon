@@ -28,7 +28,7 @@ export class MeteostatAPI extends IMeteoAPI {
     console.log(url);
     const response = await axios.get(url, config);
     return {
-      meteoData: response.data,
+      meteoData: response.data.data,
     };
   }
 
@@ -48,7 +48,7 @@ export class MeteostatAPI extends IMeteoAPI {
     console.log(url);
     const response = await axios.get(url, config);
     return {
-      meteoData: response.data,
+      meteoData: response.data.data,
     };
   }
 
@@ -68,7 +68,7 @@ export class MeteostatAPI extends IMeteoAPI {
     console.log(url);
     const response = await axios.get(url, config);
     return {
-      meteoData: response.data,
+      meteoData: response.data.data,
     };
   }
 }

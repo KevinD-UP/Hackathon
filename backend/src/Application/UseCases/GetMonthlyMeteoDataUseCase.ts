@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import { IMeteoAPI } from "../Abstraction/IMeteoAPI";
 import { Text } from "../../Domain/ValueObjects/Text";
-import { MeteoArrayData } from "../Abstraction/IMeteoAPI";
+import { MeteoDataSimplify } from "../../Domain/ValueObjects/MeteoDataSimplify";
 
 @injectable()
 export class GetMonthlyMeteoDataUseCase {
@@ -11,9 +11,19 @@ export class GetMonthlyMeteoDataUseCase {
     station: Text,
     start: Text,
     end: Text
-  ): Promise<MeteoArrayData> {
+  ): Promise<MeteoDataSimplify[]> {
     const res = await this.meteoApi.getMonthlyMeteoData(station, start, end);
     await new Promise((resolve) => setTimeout(resolve, 500));
-    return res;
+    const resultSimplify = res.meteoData.map((test) =>
+      MeteoDataSimplify.createFromProps({
+        date: test.date,
+        tavg: test.tavg,
+        tmin: test.tmin,
+        tmax: test.tmax,
+        prcp: test.prcp,
+        snow: test.snow,
+      })
+    );
+    return resultSimplify;
   }
 }

@@ -1,8 +1,10 @@
 import { injectable } from "inversify";
 import { MeteoData } from "../../Domain/ValueObjects/MeteoData";
 import { Text } from "../../Domain/ValueObjects/Text";
+import { MeteoDataSimplify } from "../../Domain/ValueObjects/MeteoDataSimplify";
 
 export type MeteoArrayData = { meteoData: MeteoData[] };
+export type MeteoArrayDataSimplify = { meteoData: MeteoDataSimplify[] };
 
 @injectable()
 export abstract class IMeteoAPI {
@@ -16,11 +18,11 @@ export abstract class IMeteoAPI {
     station: Text,
     start: Text,
     end: Text
-  ): Promise<MeteoArrayData>;
+  ): Promise<MeteoArrayDataSimplify>;
 
   abstract getMonthlyMeteoData(
     station: Text,
     start: Text,
     end: Text
-  ): Promise<MeteoArrayData>;
+  ): Promise<MeteoArrayDataSimplify>;
 }
