@@ -10,6 +10,7 @@ import France from "~/components/france";
 
 const begin = "2019-03-01";
 const end = "2022-03-01";
+const period ="month";
 
 export const loader: LoaderFunction = async () => {
     const date = new Date()
@@ -21,6 +22,12 @@ export const loader: LoaderFunction = async () => {
     }
     throw new Error(`Error! status`)
 };
+
+function getMonthDate(dateString : string){
+    const parsedDateString = new Date(dateString);
+    const constructedString = parsedDateString.getMonth() + 1 + "/" + parsedDateString.getFullYear();
+    return constructedString;
+}
 
 
 export default function Graph() {
@@ -35,13 +42,13 @@ export default function Graph() {
 
     for (let i in meteo){
         if(meteo[i].tavg !== null){
-            avgTemperatureData.push({y: meteo[i].tavg , x: meteo[i].date});
+            avgTemperatureData.push({y: meteo[i].tavg , x: getMonthDate(meteo[i].date)});
         }
         if(meteo[i].tmin !== null){
-            minTemperatureData.push({y: meteo[i].tmin , x: meteo[i].date});
+            minTemperatureData.push({y: meteo[i].tmin , x: getMonthDate(meteo[i].date)});
         }
         if(meteo[i].tmax !== null){
-            maxTemperatureData.push({y: meteo[i].tmax , x: meteo[i].date});
+            maxTemperatureData.push({y: meteo[i].tmax , x: getMonthDate(meteo[i].date)});
         }
 
     }
@@ -59,6 +66,8 @@ export default function Graph() {
 
 
     const yAxis = "°C";
+
+    console.log(avgTemperatureData);
 
     return (
       <div className="flex h-full min-h-screen flex-col justify-between">
