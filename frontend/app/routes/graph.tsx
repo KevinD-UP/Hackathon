@@ -1,6 +1,7 @@
 import React, {useState, useCallback, CSSProperties, useEffect, } from 'react';
 import {Link, useLoaderData} from "@remix-run/react";
 import LineSeriesMouseOver from "~/components/LineSeriesMouseOver";
+import LineSeriesMouseOverMM from "~/components/LineSeriesMouseOverMM";
 import ArticleCarousel from "~/components/ArticleCarousel";
 import LevelAnxiety from "~/components/LevelAnxiety";
 import axios from "axios";
@@ -8,7 +9,7 @@ import type {LoaderFunction} from "@remix-run/server-runtime";
 import {json} from "@remix-run/node";
 import France from "~/components/france";
 
-const begin = "2019-03-01";
+const begin = "2000-03-01";
 const end = "2022-03-01";
 const period ="month";
 
@@ -34,11 +35,11 @@ export default function Graph() {
 
     const {meteo, articles} = useLoaderData();
 
-
-    const rawTemperatureData = Array();
     const avgTemperatureData = Array();
     const minTemperatureData =  Array();
     const maxTemperatureData = Array();
+    const prcpData =  Array();
+    const snowData= Array();
 
     for (let i in meteo){
         if(meteo[i].tavg !== null){
@@ -50,6 +51,12 @@ export default function Graph() {
         if(meteo[i].tmax !== null){
             maxTemperatureData.push({y: meteo[i].tmax , x: getMonthDate(meteo[i].date)});
         }
+        if(meteo[i].prcp !==null){
+            prcpData.push({y: meteo[i].prcp , x: getMonthDate(meteo[i].date)});
+        }
+        if(meteo[i].snow !==null){
+            snowData.push({y: meteo[i].snow , x: getMonthDate(meteo[i].date)});
+        }
 
     }
 
@@ -57,17 +64,12 @@ export default function Graph() {
     const minTempTuple = [minTemperatureData, "tmp min Paris"];
     const maxTempTuple = [maxTemperatureData, "tmp max Paris"];
 
-    const avgTempTupleA = [avgTemperatureData, "ffffne Paris"];
-    const minTempTupleB = [minTemperatureData, "tmp efefefeParis"];
-    const maxTempTupleB = [maxTemperatureData, "tmpfefefeferrrrris"];
+    const prcpTuple = [prcpData, "prcp Paris"];
+    const snowTuple = [snowData, "snow Paris"];
 
     const lineDataRaw = [avgTempTuple, minTempTuple, maxTempTuple];
-    const lineDataRawA = [avgTempTupleA, minTempTupleB, maxTempTupleB];
+    const lineDataRawMM = [prcpTuple, snowTuple];
 
-
-    const yAxis = "°C";
-
-    console.log(avgTemperatureData);
 
     return (
       <div className="flex h-full min-h-screen flex-col justify-between">
@@ -100,10 +102,10 @@ export default function Graph() {
                       <h2 className="text-4xl font-bold text-white text-center -mb-4">Météorologie</h2>
                       <div className='bg-slate-800 h-full  rounded-xl flex flex-col  justify-around  '>
                           <div className='h-2/5  w-full'>
-                              <LineSeriesMouseOver lineDataRaw={lineDataRaw} yAxis={yAxis} begin={begin} end={end}/>
+                              <LineSeriesMouseOver lineDataRaw={lineDataRaw}  begin={begin} end={end}/>
                           </div>
                           <div className='h-2/5 w-full'>
-                              <LineSeriesMouseOver lineDataRaw={lineDataRawA} yAxis={yAxis} begin={begin} end={end}/>
+                              <LineSeriesMouseOverMM lineDataRaw={lineDataRawMM}  begin={begin} end={end}/>
                           </div>
                       </div>
                   </div>
