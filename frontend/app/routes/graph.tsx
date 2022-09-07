@@ -14,7 +14,7 @@ export default function Graph() {
     const data2raw = [data2, "tpmMin"];
     const data3raw = [data3, "tmpAvg"];
 
-    const lineDataRaw = [data1raw, data2raw, data3raw, data1raw, data2raw, data3raw, data2raw, data3raw, data1raw, data3raw];
+    const lineDataRaw = [data1raw, data2raw, data3raw];
     const yAxis = "°C";
 
     return (
@@ -76,11 +76,14 @@ export default function Graph() {
 
                     <div className=' w-7/12 flex-col -mt-8 '>
                         <h2 className="text-4xl font-bold text-white text-center -mb-4">Météorologie</h2>
-                        <div className='bg-slate-800 h-full min-h-full rounded-xl flex items-center justify-center '>
-                            <div className='bg-white rounded-xl center h-fit w-fit'>
+                        <div className='bg-slate-800 h-full  rounded-xl flex flex-col  justify-around  '>
+                            <div className='h-2/5  w-full'>
                                 <LineSeriesMouseOver lineDataRaw={lineDataRaw} yAxis={yAxis}/>
-
                             </div>
+                            <div className='h-2/5 w-full'>
+                                <LineSeriesMouseOver lineDataRaw={lineDataRaw} yAxis={yAxis}/>
+                            </div>
+
 
                         </div>
                     </div>

@@ -63,23 +63,23 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
         return(
 
-            <div className='flex w-full h-full bg-slate-300 '>
+            <div className='flex bg-slate-300 max-h-full rounded-xl '>
 
-                <div className=' overflow-auto min-h-full overflow-y-scroll w-2/12'>
+                <div className=' overflow-auto max-h-full overflow-auto w-2/12'>
                     <DiscreteColorLegend items={items} onItemClick={this.clickHandler} orientation={"vertical"}  />
                 </div>
 
-                <div className=' bg-white min-w-fit flex-1 mr-0 flex justify-center'>
+                <div className=' rounded-xl  bg-white min-w-fit flex-1 mr-0 flex justify-center overflow-hidden'>
 
-                    <XYPlot height={500} width={570} margin={{right: 50, top:30}} yType='linear' yDomain={[-30, 55]} xType={"ordinal"}
+                    <XYPlot height={310} width={870}  yType='linear' yDomain={[-30, 55]} xType={"ordinal"}
                             onMouseLeave={() => this.setState({index: -1})}>
 
                         <VerticalGridLines tickTotal={5000} style={{strokeWidth: 2, stroke: "lightgrey"}}/>
-                        <HorizontalGridLines style={{strokeWidth: 2, stroke: "lightgrey"}} innerWidth={470} left={65}
+                        <HorizontalGridLines style={{strokeWidth: 2, stroke: "lightgrey"}} innerWidth={770} left={75}
                                              tickValues={tickValuesXGrid}/>
 
                         <XAxis style={{line: {stroke: "black"}}} title="Temps" on0={true}
-                               innerWidth={500} tickSizeInner={0}/>
+                               innerWidth={800} tickSizeInner={0}/>
                         <YAxis style={{line: {stroke: "black"}}} on0={true} tickValues={tickValuesYAxis}
                                tickFormat={v => `${v} ${this.state.yAxis}`} tickSizeInner={0}/>
 
