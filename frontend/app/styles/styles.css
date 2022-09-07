@@ -1,2 +1,8 @@
 
 
+.rv-xy-plot__axis__tick:first-of-type{
+    opacity: 0;
+}
+
+
+
