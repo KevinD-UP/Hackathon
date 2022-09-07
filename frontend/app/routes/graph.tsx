@@ -1,11 +1,21 @@
-
 import React, {useState, useCallback, CSSProperties, useEffect, } from 'react';
 import { useTransition, animated, AnimatedProps, useSpringRef } from '@react-spring/web';
-import { Link } from "@remix-run/react";
+import {Link, useLoaderData} from "@remix-run/react";
 import LineSeriesMouseOver from "~/components/LineSeriesMouseOver";
 import ArticleCarousel from "~/components/ArticleCarousel";
+import axios from "axios";
+import {LoaderFunction} from "@remix-run/server-runtime";
+import {json} from "@remix-run/node";
+
+export const loader: LoaderFunction = async () => {
+    const date = new Date()
+    const formattedDate = date.toISOString().split('T')[0]
+    const { data } = await axios.get(`http://localhost:8000/news/${formattedDate}/${formattedDate}`)
+    return json(data)
+};
 
 export default function Graph() {
+    const loadedData = useLoaderData()
 
     const data1 = [...Array(10).keys()].map(x => ({x, y : Math.random() *50}));
     const data2 = [...Array(10).keys()].map(x => ({x, y : Math.random() *-40}));
@@ -25,10 +35,8 @@ export default function Graph() {
                     <Link to=".">Réchauffement Climatique</Link>
                 </h1>
             </header>
-
             <main className="flex  h-full w-full bg-slate-500 justify-center items-center">
                 <div className="flex  h-4/5 w-11/12  justify-around ">
-
                     <div className=' w-3/12 flex-col -mt-8 '>
                         <h2 className="text-4xl font-bold text-white text-center -mb-4">Anxiété population</h2>
                         <div className='bg-slate-800 h-full min-h-full rounded-xl'>
@@ -45,8 +53,6 @@ export default function Graph() {
                             <div className='h-2/5 w-full'>
                                 <LineSeriesMouseOver lineDataRaw={lineDataRaw} yAxis={yAxis}/>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
