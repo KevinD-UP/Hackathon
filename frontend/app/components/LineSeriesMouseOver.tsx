@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {
     Crosshair,
     DiscreteColorLegend, Highlight, Hint,
-    HorizontalGridLines,
+    HorizontalGridLines, LabelSeries,
     LineMarkSeries,
     LineSeries, MarkSeries,
     VerticalGridLines,
@@ -126,8 +126,9 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
                     <DiscreteColorLegend height={325}
                                items={items} onItemClick={this.legendClickHandler} orientation={"vertical"}  />
                     <button onClick={this.buttonClickHandler}
-                            className={`bg-blue-500 ${this.state.hints ? "opacity-50" : "" }
-                            hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full center`}>
+                            className={`${this.state.hints ? "bg-red-500" : "bg-green-500" }
+                            hover:opacity-50 
+                             text-white font-bold py-2 px-4 rounded-full center`}>
                         {this.state.hints ? "Desactiver hints" : "Activer Hints"}
                     </button>
                 </div>
@@ -136,7 +137,9 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
                     <XYPlot height={400} width={800} margin={{top:20}} xDomain={tickDomainXAxis}
                             yType='linear'  xType='ordinal'
-                            animation
+                            animation colorRange={['lightblue','blue','darkblue','black']}
+                            colorDomain={lineData.map((d,i) => (i*(lineData.length/4)))}
+                            colorType='linear'
                             yDomain={
                                 lastDrawLocation && [lastDrawLocation.bottom, lastDrawLocation.top]
                             }
@@ -158,8 +161,9 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
                             getNull={(d) => d.y !== null}
                             data={d} key={`${i+1}`}
                             onNearestX={(value, {index} )=> this.remindValueSecondSerie(value, i)}
-                            style={{strokeWidth: `${this.state.items[i+1].selected  ? "3" : "2"}`}}
-                            opacity={items[i+1].disabled ? 0 : 1} stroke={this.state.items[i+1].selected ? "red" : i+1 === index ? "orange" : undefined}
+                            style={{strokeWidth: `${this.state.items[i+1].selected  ? "4" : "3"}`}}
+                            color={i}
+                            opacity={items[i+1].disabled ? 0 : 1} stroke={this.state.items[i+1].selected ? "red" : (i+1 === index ? "orange" : undefined)}
                             />))}
 
                         {lineData.map((d, i) => (<LineSeries
@@ -172,7 +176,7 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
                         <LineSeries key={"normals"} opacity={items[0].disabled ? 0 : 1}
                             getNull={(d) => d.y !== null} stroke={"red"}
-                            data={this.props.normals[0]}  style={{strokeWidth: 3}}
+                            data={this.props.normals[0]}  style={{strokeWidth: 4}}
                                     onNearestX={this.remindValue}
                             />
 
@@ -192,6 +196,7 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
                                      ${!this.state.hints ? "opacity-0" : ""}`}>{`${Number(Math.abs(d.y - hintLineValues[i+1].y )).toFixed(1)} ${yAxis}`}</div>
                             </Hint>
                             ))}
+
 
                         <Highlight
                             onBrushEnd={area => this.setState({lastDrawLocation : area})}
