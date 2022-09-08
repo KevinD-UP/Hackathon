@@ -1,14 +1,12 @@
 import React from "react";
-
 type ArticleProps = {
     img: string
     title: string
-    description: string
     url: string
     isActive: boolean
 }
 
-export default function Article({img, title, description, url, isActive} : ArticleProps) {
+export default function Article({img, title, url, isActive} : ArticleProps) {
 
     const divProps = "carousel-item relative float-left w-full"
     const active = isActive ? divProps + " active" : divProps;

@@ -7,9 +7,9 @@ type LevelAnxietyProps = {
 export default function LevelAnxiety({score}: LevelAnxietyProps) {
 
     const emotions = {
-        happy: "img/emoji_happy.png",
-        neutral: "img/emoji_neutral.png",
-        sad: "img/emoji_angry.png"
+        happy: "/img/emoji_happy.png",
+        neutral: "/img/emoji_neutral.png",
+        sad: "/img/emoji_angry.png"
     }
     const mood = score < 0 ? emotions.sad : score < 50 ? emotions.neutral : emotions.happy
 
