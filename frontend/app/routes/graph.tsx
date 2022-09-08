@@ -1,4 +1,4 @@
-import React, {useState, useCallback, CSSProperties, useEffect, } from 'react';
+import React, {} from 'react';
 import {Link, useLoaderData} from "@remix-run/react";
 import LineSeriesMouseOver from "~/components/LineSeriesMouseOver";
 import LineSeriesMouseOverMM from "~/components/LineSeriesMouseOverMM";
@@ -55,7 +55,6 @@ function  emptyArray(array: any[]) {
 
 
 export default function Graph() {
-
     const {meteo, articles} = useLoaderData();
 
     let avgTemperatureData = Array();
@@ -208,7 +207,7 @@ export default function Graph() {
                           <h2 className="text-4xl font-bold text-white text-center -mb-4">Anxiété population</h2>
                           <div className='bg-slate-800 h-full min-h-full rounded-xl'>
                               <LevelAnxiety score={articles.averageEmotionScore}/>
-                              <ArticleCarousel />
+                              <ArticleCarousel articles={articles.articlesWithAnalysis}/>
                           </div>
                       </div>
                       <div className=' flex-col -mt-8 h-1/2'>
