@@ -9,36 +9,45 @@ import type {LoaderFunction} from "@remix-run/server-runtime";
 import {json} from "@remix-run/node";
 import France from "~/components/france";
 
-const begin = "2020-01-01";
-const end = "2021-02-01";
-const period ="day";
-const meteoPath = period == "day" ? "daily" : "monthly";
+const begin = "1980-01-01";
+const end = "2021-12-01";
 
 export const loader: LoaderFunction = async () => {
     const date = new Date()
     const formattedDate = date.toISOString().split('T')[0]
-    const articlesAxios = await axios.get(`http://localhost:8000/news/${formattedDate}/${formattedDate}`)
-    const meteoAxios = await axios.get(`http://localhost:8000/${meteoPath}meteostat/07156/${begin}/${end}`)
+    const articlesAxios = await axios.get(`http://localhost:8000/news/2022-09-01/2022-09-01`)
+    const meteoAxios = await axios.get(`http://localhost:8000/monthlymeteostat/07156/${begin}/${end}`)
     if(articlesAxios.status === 200 && meteoAxios.status === 200){
         return json({meteo: meteoAxios.data, articles: articlesAxios.data})
     }
     throw new Error(`Error! status`)
 };
 
-function getMonthDate(dateString : string){
+function getShortDate(dateString : string, period: string){
     const parsedDateString = new Date(dateString);
     let constructedString;
     if(period == "month"){
         constructedString = parsedDateString.getMonth() + 1 + "/" + parsedDateString.getFullYear();
     }
-
-    else if(period == "day"){
-        constructedString = parsedDateString.getDate()
-            + "/" + parsedDateString.getMonth() + 1 + "/"
-        + parsedDateString.getFullYear().toString().slice(2);
+    else if(period == "year"){
+        constructedString = parsedDateString.getFullYear().toString();
     }
 
     return constructedString;
+}
+
+function copyArray( array: string | any[] ){
+    let returnValue = Array();
+    for(let i=0; i<array.length;i++){
+        returnValue.push(array[i]);
+    }
+    return returnValue
+}
+
+function  emptyArray(array: void[]){
+    while(array.length >0){
+        array.pop();
+    }
 }
 
 
@@ -47,40 +56,56 @@ export default function Graph() {
     const {meteo, articles} = useLoaderData();
 
     const avgTemperatureData = Array();
-    const minTemperatureData =  Array();
-    const maxTemperatureData = Array();
     const prcpData =  Array();
-    const snowData= Array();
 
-    for (let i in meteo){
-        let shortDate = getMonthDate(meteo[i].date);
-        if(meteo[i].tavg !== null){
-            avgTemperatureData.push({y: meteo[i].tavg , x: shortDate});
-        }
-        if(meteo[i].tmin !== null){
-            minTemperatureData.push({y: meteo[i].tmin , x: shortDate});
-        }
-        if(meteo[i].tmax !== null){
-            maxTemperatureData.push({y: meteo[i].tmax , x: shortDate});
-        }
-        if(meteo[i].prcp !==null){
-            prcpData.push({y: meteo[i].prcp , x: shortDate});
-        }
-        if(meteo[i].snow !==null){
-            snowData.push({y: meteo[i].snow , x: shortDate});
+    let previousShortDate;
+    let shortDate;
+    let avgTempYearArray= Array();
+    let avgPrcpYearArray= Array();
+
+    for (let i =0; i < meteo.length; i++) {
+        shortDate = getShortDate(meteo[i].date, "year");
+
+        //INIT previous short pour premier tour
+        if(i == 0 ){
+            previousShortDate = shortDate;
         }
 
+        // SI toujours la meme anne on push dans le sous tableau de l'annéee
+        if(previousShortDate == shortDate){
+            if (meteo[i].tavg !== null) {
+                avgTempYearArray.push({y: meteo[i].tavg, x: new Date(meteo[i].date).getMonth()});
+            }
+            if (meteo[i].prcp !== null) {
+                avgPrcpYearArray.push({y: meteo[i].prcp, x:  new Date(meteo[i].date).getMonth()});
+            }
+        }
+        //Si on viens de recup la premiere data d'une nouvelle année
+
+         if(previousShortDate != shortDate || i == meteo.length-1){
+            // on push le tuple année/ data par mois pour cette année
+            avgTemperatureData.push([copyArray(avgTempYearArray), previousShortDate]);
+            prcpData.push([avgPrcpYearArray.slice(), previousShortDate]);
+
+            // on renouvelle les array
+            emptyArray(avgTempYearArray);
+            emptyArray(avgPrcpYearArray);
+
+            // on push la premiere data de cette nouvelle année
+            if (meteo[i].tavg !== null) {
+                avgTempYearArray.push({y: meteo[i].tavg, x: new Date(meteo[i].date).getMonth()});
+            }
+            if (meteo[i].prcp !== null) {
+                avgPrcpYearArray.push({y: meteo[i].prcp, x:  new Date(meteo[i].date).getMonth()});
+            }
+        }
+            previousShortDate=shortDate;
+        console.log(avgTempYearArray);
     }
 
-    const avgTempTuple = [avgTemperatureData, "tmp moyenne Paris"];
-    const minTempTuple = [minTemperatureData, "tmp min Paris"];
-    const maxTempTuple = [maxTemperatureData, "tmp max Paris"];
+    console.log(avgTemperatureData);
 
-    const prcpTuple = [prcpData, "prcp Paris"];
-    const snowTuple = [snowData, "snow Paris"];
 
-    const lineDataRaw = [avgTempTuple, minTempTuple, maxTempTuple];
-    const lineDataRawMM = [prcpTuple, snowTuple];
 
     return (
       <div className="flex h-full min-h-screen flex-col justify-between">
@@ -113,10 +138,10 @@ export default function Graph() {
                       <h2 className="text-4xl font-bold text-white text-center -mb-4">Météorologie</h2>
                       <div className='bg-slate-800 h-full  rounded-xl flex flex-col  justify-around  '>
                           <div className='h-2/5  w-full'>
-                              <LineSeriesMouseOver lineDataRaw={lineDataRaw}  period={period} begin={begin} end={end}/>
+                              <LineSeriesMouseOver lineDataRaw={avgTemperatureData}   begin={begin} end={end}/>
                           </div>
                           <div className='h-2/5 w-full'>
-                              <LineSeriesMouseOverMM lineDataRaw={lineDataRawMM}  period={period} begin={begin} end={end}/>
+                              <LineSeriesMouseOverMM lineDataRaw={prcpData}  begin={begin} end={end}/>
                           </div>
                       </div>
                   </div>
