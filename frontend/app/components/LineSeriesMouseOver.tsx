@@ -119,11 +119,13 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
                             title={yAxis} tickSizeInner={0}/>
 
                         {lineData.map((d, i) => (<LineSeries
+                            getNull={(d) => d.y !== null}
                             data={d} key={`${i}`} style={{strokeWidth: 2}}
                             opacity={items[i].disabled ? 0 : 1}
                             stroke={i === index ? "orange" : undefined}/>))}
 
                         {lineData.map((d, i) => (<LineSeries
+                            getNull={(d) => d.y !== null}
                             data={d} key={`${i}-mouseover`}
                             onSeriesMouseOut={() => this.setState({index: -1})}
                             onSeriesMouseOver={() => this.setState({index: i})}

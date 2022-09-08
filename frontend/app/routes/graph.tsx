@@ -9,8 +9,8 @@ import type {LoaderFunction} from "@remix-run/server-runtime";
 import {json} from "@remix-run/node";
 import France from "~/components/france";
 
-const begin = "1980-01-01";
-const end = "2021-12-01";
+const begin = "1990-01-01";
+const end = "2000-12-01";
 let decade =true;
 
 export const monthNames= ["Janvier","Fevrier","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Decembre"];
@@ -75,19 +75,9 @@ export default function Graph() {
         if(i == 0 ){
             previousShortDate = shortDate;
         }
-
-        // SI toujours la meme anne on push dans le sous tableau de l'annéee
-        if(previousShortDate == shortDate){
-            if (meteo[i].tavg !== null) {
-                avgTempYearArray.push({y: meteo[i].tavg, x: monthDate});
-            }
-            if (meteo[i].prcp !== null) {
-                avgPrcpYearArray.push({y: meteo[i].prcp, x:  monthDate});
-            }
-        }
         //Si on viens de recup la premiere data d'une nouvelle année
 
-         if(previousShortDate != shortDate || i == meteo.length-1){
+        if(previousShortDate != shortDate || i == meteo.length-1){
             // on push le tuple année/ data par mois pour cette année
             avgTemperatureData.push([copyArray(avgTempYearArray), previousShortDate]);
             prcpData.push([avgPrcpYearArray.slice(), previousShortDate]);
@@ -96,15 +86,14 @@ export default function Graph() {
             emptyArray(avgTempYearArray);
             emptyArray(avgPrcpYearArray);
 
-            // on push la premiere data de cette nouvelle année
-            if (meteo[i].tavg !== null) {
-                avgTempYearArray.push({y: meteo[i].tavg, x: monthDate});
-            }
-            if (meteo[i].prcp !== null) {
-                avgPrcpYearArray.push({y: meteo[i].prcp, x: monthDate});
-            }
         }
-            previousShortDate=shortDate;
+
+        // SI toujours la meme anne on push dans le sous tableau de l'annéee
+
+        avgTempYearArray.push({y: meteo[i].tavg, x: monthDate});
+        avgPrcpYearArray.push({y: meteo[i].prcp, x:  monthDate});
+
+        previousShortDate=shortDate;
     }
 
     //ON veut juste une moyenne par décennie
@@ -115,7 +104,9 @@ export default function Graph() {
         //première année de découpe
         let currentDecade = new Date(begin).getFullYear();
         let sumAvgTmp = [0,0,0,0,0,0,0,0,0,0,0,0];
+        let divAvgTmp= [0,0,0,0,0,0,0,0,0,0,0,0];
         let sumAvgPrcp =[0,0,0,0,0,0,0,0,0,0,0,0];
+        let divAvgPrcp = [0,0,0,0,0,0,0,0,0,0,0,0];
         let cptAnnees =0;
         //on parcours toutes les années concernées
         for(let i =0; i<avgTemperatureData.length;i++){
@@ -128,12 +119,11 @@ export default function Graph() {
 
                 //on divise les sommes pour avoir la moyenne
                 for(let j=0; j<sumAvgPrcp.length; j++){
-                    sumAvgPrcp[j] = sumAvgPrcp[j]/cptAnnees;
-                    sumAvgTmp[j]=sumAvgTmp[j]/cptAnnees;
+                    sumAvgPrcp[j] = sumAvgPrcp[j]/divAvgPrcp[j];
+                    sumAvgTmp[j]=sumAvgTmp[j]/divAvgTmp[j];
                     tmpDecadeWithMonth.push({x:monthNames[j],y: sumAvgTmp[j]});
                     prcpDecadeWithMonth.push({x:monthNames[j],y: sumAvgPrcp[j]});
                 }
-
 
                 //push des moyennes pour la décénnie
                 avgTempDecadeData.push([tmpDecadeWithMonth, currentDecade + "-" + (currentDecade + cptAnnees)]);
@@ -144,10 +134,14 @@ export default function Graph() {
                 cptAnnees =0;
                 //clear des tableaux
                 emptyArray(sumAvgPrcp);
-                emptyArray(sumAvgPrcp);
+                emptyArray(sumAvgTmp);
+                emptyArray(divAvgPrcp);
+                emptyArray(divAvgTmp);
                 //reinit des tableaux
                 sumAvgTmp = [0,0,0,0,0,0,0,0,0,0,0,0];
                 sumAvgPrcp =[0,0,0,0,0,0,0,0,0,0,0,0];
+                divAvgTmp = [0,0,0,0,0,0,0,0,0,0,0,0];
+                divAvgPrcp = [0,0,0,0,0,0,0,0,0,0,0,0];
 
             }
 
@@ -157,7 +151,10 @@ export default function Graph() {
                 let curseurTmp =0;
                 for(let j=0; j<sumAvgTmp.length; j++){
                     if(avgTemperatureData[i][0][curseurTmp].x == monthNames[j]){
-                        sumAvgTmp[j]+=avgTemperatureData[i][0][curseurTmp].y;
+                        if(avgTemperatureData[i][0][curseurTmp].y !== null){
+                            sumAvgTmp[j]+=avgTemperatureData[i][0][curseurTmp].y;
+                            divAvgTmp[j] +=1;
+                        }
                         curseurTmp+=1;
                         if(curseurTmp >= avgTemperatureData[i][0].length){
                             break;
@@ -174,7 +171,10 @@ export default function Graph() {
                 for(let j=0; j<sumAvgPrcp.length; j++){
                     //si il y a une
                     if(prcpData[i][0][curseurPrcp].x == monthNames[j]){
-                        sumAvgPrcp[j]+=prcpData[i][0][curseurPrcp].y;
+                        if(prcpData[i][0][curseurPrcp].y !== null){
+                            sumAvgPrcp[j]+=prcpData[i][0][curseurPrcp].y;
+                            divAvgPrcp[j]+=1;
+                        }
                         curseurPrcp+=1;
                         if(curseurPrcp >= prcpData[i][0].length){
                             break;
@@ -188,10 +188,8 @@ export default function Graph() {
             //une anne de plus additionnee
             cptAnnees +=1;
         }
-
         prcpData= prcpDecadeData;
         avgTemperatureData= avgTempDecadeData;
-
     }
 
     return (
