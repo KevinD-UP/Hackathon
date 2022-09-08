@@ -11,6 +11,7 @@ import {
 } from "react-vis";
 
 import moment from "moment";
+import {monthNames} from "~/routes/graph";
 
 interface IProps {
     lineDataRaw : any;
@@ -59,7 +60,7 @@ export default  class LineSeriesMouseOverMM extends Component<IProps, IState> {
 
 
 
-        const  tickValuesXAxis = [0,1,2,3,4,5,6,7,8,9,10,11];
+        const  tickValuesXAxis = monthNames;
         const tickDomainXAxis = tickValuesXAxis;
 
        /* const tickValuesXAxis = Array();
