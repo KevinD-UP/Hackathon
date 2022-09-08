@@ -14,6 +14,7 @@ import { GetDailyMeteoDataUseCase } from "../Application/UseCases/GetDailyMeteoD
 import { GetMonthlyMeteoDataUseCase } from "../Application/UseCases/GetMonthlyMeteoDataUseCase";
 import { GetMonthRecordTemperatureUseCase } from "../Application/UseCases/GetMonthRecordTemperatureUseCase";
 import { GetDayRecordTemperatureUseCase } from "../Application/UseCases/GetDayRecordTemperatureUseCase";
+import { GetMoyenneOfSeasonUseCase } from "../Application/UseCases/GetMoyenneOfSeasonUseCase";
 
 const container = new Container();
 container.bind(ISentimentAnalyzer).to(SentimentAnalyzer);
@@ -27,4 +28,6 @@ container.bind(GetDailyMeteoDataUseCase).toSelf();
 container.bind(GetMonthlyMeteoDataUseCase).toSelf();
 container.bind(GetMonthRecordTemperatureUseCase).toSelf();
 container.bind(GetDayRecordTemperatureUseCase).toSelf();
+container.bind(GetMoyenneOfSeasonUseCase).toSelf();
+
 export { container };
