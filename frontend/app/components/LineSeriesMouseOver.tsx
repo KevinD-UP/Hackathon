@@ -183,13 +183,15 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
                             markStyle={{stroke: `${this.state.hints ? "black" : "transparent"}`, strokeWidth: 3 ,
                                 fill: `${this.state.hints ? "black" : "transparent"}`}} />
 
-                        <Hint
-                            value={{x: value.x, y: (value.x+valueSecondSerie.x)/2 }}
-                            align={{horizontal: 'auto', vertical: 'top'}}>
-                            <div
-                                className={`rv-hint__content ${!this.state.hints ? "opacity-0" : ""}`}>{`(${value.x}, ${value.y})`}</div>
-                        </Hint>
-
+                        {hintLineValues.slice(0,hintLineValues.length-1).map((d, i) => (<Hint
+                            getNull={() => d.y !== null && d.x!== null && hintLineValues[i+1] && hintLineValues[i+1].y !== null}
+                            value={{x: d.x, y : (hintLineValues[i+1].y + d.y)/2 }}
+                            key={`${i}-hint`} align={{horizontal: 'left', vertical: 'top'}}>
+                                <div
+                                    className={` rv-hint__content
+                                     ${!this.state.hints ? "opacity-0" : ""}`}>{`${Number(Math.abs(d.y - hintLineValues[i+1].y )).toFixed(1)} ${yAxis}`}</div>
+                            </Hint>
+                            ))}
 
 
                     </XYPlot>
