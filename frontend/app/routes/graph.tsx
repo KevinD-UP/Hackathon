@@ -9,9 +9,9 @@ import type {LoaderFunction} from "@remix-run/server-runtime";
 import {json} from "@remix-run/node";
 import France from "~/components/france";
 
-const begin = "1990-01-01";
-const end = "2000-12-01";
-let decade =true;
+const begin = "1980-01-01";
+const end = "2021-12-01";
+let decade =false;
 
 export const monthNames= ["Janvier","Fevrier","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Decembre"];
 
