@@ -53,14 +53,15 @@
     "node-fetch": "^2.6.7",
     "randomcolor": "^0.6.2",
     "react": "^18.2.0",
+    "react-bootstrap-input-spinner": "^1.0.2",
     "react-dom": "^18.2.0",
-    "react-vis": "^1.11.7",
-    "tw-elements": "^1.0.0-alpha12",
     "react-scripts": "^5.0.1",
     "react-simple-maps": "^3.0.0",
     "react-spring": "^9.5.2",
     "react-tooltip": "^4.2.21",
-    "tiny-invariant": "^1.2.0"
+    "react-vis": "^1.11.7",
+    "tiny-invariant": "^1.2.0",
+    "tw-elements": "^1.0.0-alpha12"
   },
   "devDependencies": {
     "@faker-js/faker": "^7.4.0",
