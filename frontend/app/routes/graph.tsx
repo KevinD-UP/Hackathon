@@ -11,6 +11,9 @@ import France from "~/components/france";
 
 const begin = "1980-01-01";
 const end = "2021-12-01";
+let decade =true;
+
+export const monthNames= ["Janvier","Fevrier","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Decembre"];
 
 export const loader: LoaderFunction = async () => {
     const date = new Date()
@@ -44,8 +47,8 @@ function copyArray( array: string | any[] ){
     return returnValue
 }
 
-function  emptyArray(array: void[]){
-    while(array.length >0){
+function  emptyArray(array: any[]) {
+    while (array.length > 0) {
         array.pop();
     }
 }
@@ -55,8 +58,8 @@ export default function Graph() {
 
     const {meteo, articles} = useLoaderData();
 
-    const avgTemperatureData = Array();
-    const prcpData =  Array();
+    let avgTemperatureData = Array();
+    let prcpData =  Array();
 
     let previousShortDate;
     let shortDate;
@@ -66,6 +69,8 @@ export default function Graph() {
     for (let i =0; i < meteo.length; i++) {
         shortDate = getShortDate(meteo[i].date, "year");
 
+        let monthDate = monthNames[new Date(meteo[i].date).getMonth()];
+
         //INIT previous short pour premier tour
         if(i == 0 ){
             previousShortDate = shortDate;
@@ -74,10 +79,10 @@ export default function Graph() {
         // SI toujours la meme anne on push dans le sous tableau de l'annéee
         if(previousShortDate == shortDate){
             if (meteo[i].tavg !== null) {
-                avgTempYearArray.push({y: meteo[i].tavg, x: new Date(meteo[i].date).getMonth()});
+                avgTempYearArray.push({y: meteo[i].tavg, x: monthDate});
             }
             if (meteo[i].prcp !== null) {
-                avgPrcpYearArray.push({y: meteo[i].prcp, x:  new Date(meteo[i].date).getMonth()});
+                avgPrcpYearArray.push({y: meteo[i].prcp, x:  monthDate});
             }
         }
         //Si on viens de recup la premiere data d'une nouvelle année
@@ -93,19 +98,101 @@ export default function Graph() {
 
             // on push la premiere data de cette nouvelle année
             if (meteo[i].tavg !== null) {
-                avgTempYearArray.push({y: meteo[i].tavg, x: new Date(meteo[i].date).getMonth()});
+                avgTempYearArray.push({y: meteo[i].tavg, x: monthDate});
             }
             if (meteo[i].prcp !== null) {
-                avgPrcpYearArray.push({y: meteo[i].prcp, x:  new Date(meteo[i].date).getMonth()});
+                avgPrcpYearArray.push({y: meteo[i].prcp, x: monthDate});
             }
         }
             previousShortDate=shortDate;
-        console.log(avgTempYearArray);
     }
 
-    console.log(avgTemperatureData);
+    //ON veut juste une moyenne par décennie
+    if(decade){
+        //final result per decade
+        let avgTempDecadeData = Array();
+        let prcpDecadeData = Array();
+        //première année de découpe
+        let currentDecade = new Date(begin).getFullYear();
+        let sumAvgTmp = [0,0,0,0,0,0,0,0,0,0,0,0];
+        let sumAvgPrcp =[0,0,0,0,0,0,0,0,0,0,0,0];
+        let cptAnnees =0;
+        //on parcours toutes les années concernées
+        for(let i =0; i<avgTemperatureData.length;i++){
+
+            //on viens de sauter une décénie
+             if (Number(avgTemperatureData[i][1] ) >= currentDecade+10 || i == avgTemperatureData.length-1){
+
+                let tmpDecadeWithMonth = Array();
+                let prcpDecadeWithMonth = Array();
+
+                //on divise les sommes pour avoir la moyenne
+                for(let j=0; j<sumAvgPrcp.length; j++){
+                    sumAvgPrcp[j] = sumAvgPrcp[j]/cptAnnees;
+                    sumAvgTmp[j]=sumAvgTmp[j]/cptAnnees;
+                    tmpDecadeWithMonth.push({x:monthNames[j],y: sumAvgTmp[j]});
+                    prcpDecadeWithMonth.push({x:monthNames[j],y: sumAvgPrcp[j]});
+                }
 
 
+                //push des moyennes pour la décénnie
+                avgTempDecadeData.push([tmpDecadeWithMonth, currentDecade + "-" + (currentDecade + cptAnnees)]);
+                prcpDecadeData.push([prcpDecadeWithMonth, currentDecade + "-" + (currentDecade+cptAnnees)]);
+
+                //clear des compteurs
+                currentDecade=currentDecade+10;
+                cptAnnees =0;
+                //clear des tableaux
+                emptyArray(sumAvgPrcp);
+                emptyArray(sumAvgPrcp);
+                //reinit des tableaux
+                sumAvgTmp = [0,0,0,0,0,0,0,0,0,0,0,0];
+                sumAvgPrcp =[0,0,0,0,0,0,0,0,0,0,0,0];
+
+            }
+
+
+             //on ajoute a la somme pour la decenie temperature
+            if( avgTemperatureData[i][0].length != 0){
+                let curseurTmp =0;
+                for(let j=0; j<sumAvgTmp.length; j++){
+                    if(avgTemperatureData[i][0][curseurTmp].x == monthNames[j]){
+                        sumAvgTmp[j]+=avgTemperatureData[i][0][curseurTmp].y;
+                        curseurTmp+=1;
+                        if(curseurTmp >= avgTemperatureData[i][0].length){
+                            break;
+                        }
+                    }
+                    else{
+                        j+=1;
+                    }
+                }
+            }
+            //on ajoute a la somme pour la decenie précipitation
+            if(prcpData[i][0].length !=0){
+                let curseurPrcp =0;
+                for(let j=0; j<sumAvgPrcp.length; j++){
+                    //si il y a une
+                    if(prcpData[i][0][curseurPrcp].x == monthNames[j]){
+                        sumAvgPrcp[j]+=prcpData[i][0][curseurPrcp].y;
+                        curseurPrcp+=1;
+                        if(curseurPrcp >= prcpData[i][0].length){
+                            break;
+                        }
+                    }
+                    else{
+                        j+=1;
+                    }
+                }
+            }
+            //une anne de plus additionnee
+            cptAnnees +=1;
+        }
+
+        prcpData= prcpDecadeData;
+        avgTemperatureData= avgTempDecadeData;
+
+    }
 
     return (
       <div className="flex h-full min-h-screen flex-col justify-between">

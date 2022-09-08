@@ -11,6 +11,7 @@ import {
 } from "react-vis";
 
 import moment from "moment";
+import {monthNames} from "~/routes/graph";
 
 interface IProps {
     lineDataRaw : any;
@@ -62,7 +63,7 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
         const tickValuesYAxis = [-20,-15,-10,-5, 0,5,10,15,20,25,30,35,40,45];
         const tickValuesXGrid = [-15,-10,-5,0,5,10,15,20,25,30,35,40];
 
-        const  tickValuesXAxis = [0,1,2,3,4,5,6,7,8,9,10,11];
+        const  tickValuesXAxis = monthNames;
         const tickDomainXAxis = tickValuesXAxis;
 
        /* const tickValuesXAxis = Array();
@@ -107,13 +108,15 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
                             onMouseLeave={() => this.setState({index: -1})}>
 
                         <VerticalGridLines  style={{strokeWidth: 2, stroke: "lightgrey"}}/>
-                        <HorizontalGridLines style={{strokeWidth: 2, stroke: "lightgrey"}} innerWidth={770} left={35}
+                        <HorizontalGridLines style={{strokeWidth: 2, stroke: "lightgrey"}} innerWidth={770}
                                              tickValues={tickValuesXGrid}/>
 
-                        <XAxis style={{line: {stroke: "black"}, ticks: {color: '#000', fontSize: '12px'}}} title="Temps" on0={true}
+                        <XAxis
+                            style={{line: {stroke: "black"}, ticks: {color: '#000', fontSize: '12px'}}} title="Temps" on0={true}
                                innerWidth={800} tickSizeInner={0} tickValues={tickValuesXAxis}/>
-                        <YAxis style={{line: {stroke: "black"} , title: {fontSize: '16px', color:'#000'}}} tickValues={tickValuesYAxis}
-                               title={yAxis} tickSizeInner={0}/>
+                        <YAxis
+                            style={{line: {stroke: "black"} , title: {fontSize: '16px', color:'#000'}}} tickValues={tickValuesYAxis}
+                            title={yAxis} tickSizeInner={0}/>
 
                         {lineData.map((d, i) => (<LineSeries
                             data={d} key={`${i}`} style={{strokeWidth: 2}}
