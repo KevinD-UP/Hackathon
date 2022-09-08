@@ -4,3 +4,4 @@ import "./DailyMeteostatController";
 import "./MonthlyMeteostatController";
 import "./NewsController";
 import "./MonthlyRecordTemperatureController";
+import "./DayRecordTemperatureController";
