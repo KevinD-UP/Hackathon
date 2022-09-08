@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {
-    DiscreteColorLegend, Hint,
+    Crosshair,
+    DiscreteColorLegend, Highlight, Hint,
     HorizontalGridLines,
     LineMarkSeries,
     LineSeries, MarkSeries,
@@ -25,10 +26,9 @@ interface IProps {
 interface IState {
     index: Number;
     items: any;
-    value : any;
-    valueSecondSerie : any;
     hints : boolean;
     hintLineValues : {x: null | string, y: null | number} [];
+    lastDrawLocation :any ;
 }
 
 export default  class LineSeriesMouseOver extends Component<IProps, IState> {
@@ -46,10 +46,9 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
         this.state = {
             index : -1 ,
             items : items,
-            value : {x:0, y:0},
-            valueSecondSerie : {x:0, y:0},
             hints :false,
             hintLineValues: hintLinesValues,
+            lastDrawLocation : null
         };
     }
 
@@ -98,7 +97,7 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
     }
 
     buttonClickHandler = () => {
-        this.setState({hints : !this.state.hints, value : {x:0, y:0} , valueSecondSerie : {x:0, y:0}});
+        this.setState({hints : !this.state.hints});
 
     }
 
@@ -110,13 +109,10 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
         }
         const {index} = this.state;
         const {items} = this.state;
-        const {value} =  this.state;
         const {hintLineValues} =  this.state;
-        const {valueSecondSerie} = this.state;
-
+        const {lastDrawLocation} =  this.state;
         const yAxis = this.props.yAxis;
 
-        const YMAX = 15;
 
         const  tickValuesXAxis = monthNames;
         const tickDomainXAxis = tickValuesXAxis;
@@ -126,8 +122,8 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
             <div className='flex bg-slate-300 max-h-full rounded-xl '>
 
-                <div className=' overflow-auto max-h-full overflow-auto w-32'>
-                    <DiscreteColorLegend
+                <div className=' overflow-auto max-h-full overflow-scroll-y w-32'>
+                    <DiscreteColorLegend height={325}
                                items={items} onItemClick={this.legendClickHandler} orientation={"vertical"}  />
                     <button onClick={this.buttonClickHandler}
                             className={`bg-blue-500 ${this.state.hints ? "opacity-50" : "" }
@@ -138,8 +134,12 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
                 <div className=' rounded-xl  bg-white min-w-fit flex-1 mr-0 flex justify-center overflow-hidden'>
 
-                    <XYPlot height={300} width={800} margin={{top:20}} xDomain={tickDomainXAxis}
+                    <XYPlot height={400} width={800} margin={{top:20}} xDomain={tickDomainXAxis}
                             yType='linear'  xType='ordinal'
+                            animation
+                            yDomain={
+                                lastDrawLocation && [lastDrawLocation.bottom, lastDrawLocation.top]
+                            }
                             onMouseLeave={() => this.setState({index: -1})}>
 
                         <VerticalGridLines  style={{strokeWidth: 2, stroke: "lightgrey"}}/>
@@ -193,12 +193,26 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
                             </Hint>
                             ))}
 
+                        <Highlight
+                            onBrushEnd={area => this.setState({lastDrawLocation : area})}
+                            onDrag={area => {
+                                this.setState({
+                                    lastDrawLocation: `${area ? { 
+                                        top : lastDrawLocation.top + (area.top - area.bottom),
+                                        bottom : lastDrawLocation.bottom + (area.top - area.bottom)}: null}`
+                                })
+                            }}
+                        />
 
                     </XYPlot>
 
                 </div>
-
+                <button className="showcase-button" onClick={() => this.setState({lastDrawLocation : null})}>
+                    Reinit Zoom
+                </button>
             </div>
+
+
         );
     }
 }

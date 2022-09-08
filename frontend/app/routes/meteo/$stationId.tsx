@@ -222,8 +222,6 @@ export default function Graph() {
     let avgTempNormalsTuple =[avgTempNormalsData, "normales " + beginNormals + "-" + endNormals];
     let prcpNormalsTuple = [prcpNormalsData, "normales " + beginNormals + "-" + endNormals];
 
-   // avgTemperatureData.push(avgTempNormalsTuple);
-    //prcpData.push(prcpNormalsTuple);
 
     return (
       <div className="flex h-full min-h-screen flex-col justify-between">
@@ -288,7 +286,8 @@ export default function Graph() {
                       <div className='  flex-col -mt-8 h-1/2 '>
                           <h2 className="text-4xl font-bold text-white text-center -mb-4">Anxiété population</h2>
                           <div className='bg-slate-800 h-full min-h-full rounded-xl'>
-
+                                <LevelAnxiety score={articles.averageEmotionScore}/>
+                              <ArticleCarousel articles={articles.articlesWithAnalysis}/>
                           </div>
                       </div>
                       <div className=' flex-col -mt-8 h-1/2'>
@@ -301,11 +300,11 @@ export default function Graph() {
 
                   <div className=' w-7/12 flex-col -mt-8 '>
                       <h2 className="text-4xl font-bold text-white text-center -mb-4">Météorologie</h2>
-                      <div className='bg-slate-800 h-full  rounded-xl flex flex-col  justify-around  '>
-                          <div className='h-2/5  w-full'>
+                      <div className='bg-slate-800 h-full max-h-full rounded-xl flex flex-col  justify-around  '>
+                          <div className='max-h-1/2  w-full'>
                               <LineSeriesMouseOver lineDataRaw={avgTemperatureData}   normals={avgTempNormalsTuple} yAxis={"°C"} key={1} begin={begin} end={end}/>
                           </div>
-                          <div className='h-2/5 w-full'>
+                          <div className='max-h-1/2 w-full'>
                               <LineSeriesMouseOver lineDataRaw={prcpData} yAxis={"mm"} normals={prcpNormalsTuple} key={2} begin={begin} end={end}/>
                           </div>
                       </div>
