@@ -1,4 +1,4 @@
-import React, {} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link, useLoaderData} from "@remix-run/react";
 import LineSeriesMouseOver from "~/components/LineSeriesMouseOver";
 import LineSeriesMouseOverMM from "~/components/LineSeriesMouseOverMM";
@@ -6,7 +6,7 @@ import ArticleCarousel from "~/components/ArticleCarousel";
 import LevelAnxiety from "~/components/LevelAnxiety";
 import axios from "axios";
 import type {LoaderFunction} from "@remix-run/server-runtime";
-import {json} from "@remix-run/node";
+import { json } from "@remix-run/node";
 import France from "~/components/france";
 
 const begin = "1980-01-01";
@@ -16,12 +16,10 @@ let decade =false;
 export const monthNames= ["Janvier","Fevrier","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Decembre"];
 
 export const loader: LoaderFunction = async () => {
-    const date = new Date()
-    const formattedDate = date.toISOString().split('T')[0]
     const articlesAxios = await axios.get(`http://localhost:8000/news/2022-09-01/2022-09-01`)
     const meteoAxios = await axios.get(`http://localhost:8000/monthlymeteostat/07156/${begin}/${end}`)
     if(articlesAxios.status === 200 && meteoAxios.status === 200){
-        return json({meteo: meteoAxios.data, articles: articlesAxios.data})
+        return json({ meteo: meteoAxios.data, articles: articlesAxios.data})
     }
     throw new Error(`Error! status`)
 };
@@ -40,7 +38,7 @@ function getShortDate(dateString : string, period: string){
 }
 
 function copyArray( array: string | any[] ){
-    let returnValue = Array();
+    let returnValue = [];
     for(let i=0; i<array.length;i++){
         returnValue.push(array[i]);
     }
@@ -57,13 +55,13 @@ function  emptyArray(array: any[]) {
 export default function Graph() {
     const {meteo, articles} = useLoaderData();
 
-    let avgTemperatureData = Array();
-    let prcpData =  Array();
+    let avgTemperatureData = [];
+    let prcpData =  [];
 
     let previousShortDate;
     let shortDate;
-    let avgTempYearArray= Array();
-    let avgPrcpYearArray= Array();
+    let avgTempYearArray= [];
+    let avgPrcpYearArray= [];
 
     for (let i =0; i < meteo.length; i++) {
         shortDate = getShortDate(meteo[i].date, "year");
@@ -98,8 +96,8 @@ export default function Graph() {
     //ON veut juste une moyenne par décennie
     if(decade){
         //final result per decade
-        let avgTempDecadeData = Array();
-        let prcpDecadeData = Array();
+        let avgTempDecadeData = [];
+        let prcpDecadeData = [];
         //première année de découpe
         let currentDecade = new Date(begin).getFullYear();
         let sumAvgTmp = [0,0,0,0,0,0,0,0,0,0,0,0];
@@ -113,8 +111,8 @@ export default function Graph() {
             //on viens de sauter une décénie
              if (Number(avgTemperatureData[i][1] ) >= currentDecade+10 || i == avgTemperatureData.length-1){
 
-                let tmpDecadeWithMonth = Array();
-                let prcpDecadeWithMonth = Array();
+                let tmpDecadeWithMonth = [];
+                let prcpDecadeWithMonth = [];
 
                 //on divise les sommes pour avoir la moyenne
                 for(let j=0; j<sumAvgPrcp.length; j++){

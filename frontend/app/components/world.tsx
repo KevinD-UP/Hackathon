@@ -20,9 +20,6 @@ const markers = [
 ];
 
 export default function World () {
-  function log() {
-    console.log('Clicked');
-  };
   return (
     <ComposableMap>
       <ZoomableGroup center={[0, 0]} zoom={1}>
@@ -42,7 +39,7 @@ export default function World () {
           }
         </Geographies>
         {markers.map(({ name, coordinates, markerOffset }) => (
-          <Marker key={name} coordinates={coordinates as [number, number]} onClick={log}>
+          <Marker key={name} coordinates={coordinates as [number, number]}>
             <circle r={2} fill="#F00" stroke="#fff" strokeWidth={2} />
             <text
               textAnchor="middle"
