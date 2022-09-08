@@ -2,16 +2,13 @@ import React, {Component} from "react";
 import {
     DiscreteColorLegend,
     HorizontalGridLines,
-    LineMarkSeries,
-    LineSeries, MarkSeries,
+    LineSeries,
     VerticalGridLines,
     XAxis,
     XYPlot,
     YAxis
 } from "react-vis";
-
-import moment from "moment";
-import {monthNames} from "~/routes/graph";
+import { monthNames } from "~/routes/meteo/$stationId";
 
 interface IProps {
     lineDataRaw : any;
@@ -28,7 +25,7 @@ export default  class LineSeriesMouseOverMM extends Component<IProps, IState> {
 
     constructor(props: IProps) {
 
-        const items = Array();
+        const items = [];
         for(let i in props.lineDataRaw){
             items.push({title : props.lineDataRaw[i][1], disabled : false})
         }
@@ -49,7 +46,7 @@ export default  class LineSeriesMouseOverMM extends Component<IProps, IState> {
 
     render(){
 
-        const lineData = Array();
+        const lineData = [];
         for(let i in this.props.lineDataRaw){
             lineData.push(this.props.lineDataRaw[i][0]);
         }

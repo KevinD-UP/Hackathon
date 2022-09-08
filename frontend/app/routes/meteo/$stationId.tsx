@@ -1,5 +1,5 @@
 import React, {} from 'react';
-import {Link, useLoaderData} from "@remix-run/react";
+import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import LineSeriesMouseOver from "~/components/LineSeriesMouseOver";
 import LineSeriesMouseOverMM from "~/components/LineSeriesMouseOverMM";
 import ArticleCarousel from "~/components/ArticleCarousel";
@@ -9,17 +9,19 @@ import type {LoaderFunction} from "@remix-run/server-runtime";
 import { json } from "@remix-run/node";
 import France from "~/components/france";
 
-const begin = "1980-01-01";
-const end = "2021-12-01";
-let decade =false;
+
 
 export const monthNames= ["Janvier","Fevrier","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Decembre"];
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
+    const url = new URL (request.url);
+    const begin = `${url.searchParams.get("start")}-01-01`;
+    const end =  `${url.searchParams.get("end")}-01-01`;
+
     const articlesAxios = await axios.get(`http://localhost:8000/news/2022-09-01/2022-09-01`)
     const meteoAxios = await axios.get(`http://localhost:8000/monthlymeteostat/${params.stationId}/${begin}/${end}`)
     if(articlesAxios.status === 200 && meteoAxios.status === 200){
-        return json({ meteo: meteoAxios.data, articles: articlesAxios.data})
+        return json({ meteo: meteoAxios.data, articles: articlesAxios.data, stationId: params.stationId})
     }
     throw new Error(`Error! status`)
 };
@@ -53,7 +55,12 @@ function  emptyArray(array: any[]) {
 
 
 export default function Graph() {
-    const {meteo, articles} = useLoaderData();
+    const {meteo, articles, stationId} = useLoaderData();
+    const [searchParams] = useSearchParams();
+
+    const begin = `${searchParams.get("start")}-01-01`;
+    const end = `${searchParams.get("end")}-01-01`;
+    let decade = searchParams.get("decade") === "on";
 
     let avgTemperatureData = [];
     let prcpData =  [];
@@ -195,6 +202,54 @@ export default function Graph() {
               <h1 className="text-3xl font-bold">
                   <Link to=".">Réchauffement Climatique</Link>
               </h1>
+              <form action={`/meteo/${stationId}`} method="get">
+                  <div className="flex justify-end">
+                      <div className="mb-3 w-3/12 ">
+                          <label htmlFor="startDate" className="form-label inline-block mb-2 text-white font-bold">Date de départ</label>
+                          <input
+                            type="number"
+                            min="1950"
+                            max="2020"
+                            step="10"
+                            defaultValue={!searchParams.get("start")?"1950":searchParams.get("start")!}
+                            className="form-control block w-3/4 px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                            id="startDate"
+                            placeholder="1950"
+                            pattern="^[0-9]*$"
+                            name = "start"
+                          />
+                      </div>
+                      <div className="mb-3 w-3/12 ">
+                          <label htmlFor="EndDate" className="form-label inline-block mb-2 text-white font-bold">Date de fin</label>
+                          <input
+                            type="number"
+                            min="1950"
+                            max="2020"
+                            step="10"
+                            defaultValue={!searchParams.get("end")?"2020":searchParams.get("end")!}
+                            className="form-control block w-3/4 px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                            id="EndDate"
+                            placeholder="2020"
+                            name = "end"
+                            pattern="^[0-9]*$"
+                          />
+                      </div>
+                      <div className="mb-3 w-3/12 flex justify-center">
+                          <input
+                            name = "decade"
+                            className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                            type="checkbox"
+                            id="flexCheckChecked"
+                            defaultChecked={!searchParams.get("decade") ? false : searchParams.get("decade") === "on"}
+                          /> Décennie
+                      </div>
+                      <div>
+                          <button type="submit"
+                                  className="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Valider
+                          </button>
+                      </div>
+                  </div>
+              </form>
           </header>
 
           <main className="flex  h-full w-full bg-slate-500 justify-center items-center">

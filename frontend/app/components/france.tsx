@@ -7,8 +7,7 @@ import {
   ZoomableGroup
 } from "react-simple-maps";
 import randomColor from "randomcolor";
-import { redirect } from "@remix-run/node";
-import { Link } from "@remix-run/react";
+import { Link, useSearchParams } from "@remix-run/react";
 
 const geoUrl =
   "https://raw.githubusercontent.com/deldersveld/topojson/master/countries/france/fr-departments.json";
@@ -196,11 +195,10 @@ const markers = [
   },
 ];
 
-type FranceProps = {
-  selectCity: (id: string) => void
-}
-
 export default function France () {
+
+  const [searchParams] = useSearchParams();
+
   return (
     <ComposableMap
       projectionConfig={{
@@ -226,7 +224,9 @@ export default function France () {
           }
         </Geographies>
         {markers.map(({id, name, coordinates, markerOffset }) => (
-          <Link key={`link-to-${id}`} onClick={() => {window.location.href=`/meteo/${id}`}} to={(`/meteo/${id}`)}>
+          <Link key={`link-to-${id}`}
+                onClick={() => {window.location.href=`/meteo/${id}?start=${searchParams.get('start')}&end=${searchParams.get('end')}&decade=${searchParams.get('decade')}`}}
+                to={(`/meteo/${id}?start=${searchParams.get('start')}&end=${searchParams.get('end')}&decade=${searchParams.get('decade')}`)}>
           <Marker key={name} coordinates={coordinates as [number, number]}>
             <circle r={2} fill="#F00" stroke="grey" strokeWidth={1} />
             <text
