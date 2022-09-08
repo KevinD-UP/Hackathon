@@ -58,8 +58,6 @@ export default  class LineSeriesMouseOverMM extends Component<IProps, IState> {
 
         const yAxis = "mm";
 
-
-
         const  tickValuesXAxis = monthNames;
         const tickDomainXAxis = tickValuesXAxis;
 
