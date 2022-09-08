@@ -71,4 +71,24 @@ export class MeteostatAPI extends IMeteoAPI {
       meteoData: response.data.data,
     };
   }
+
+  async getMoyenneOfSeasonMeteoData(
+    station: Text,
+    start: Text,
+    end: Text
+  ): Promise<MeteoArrayData> {
+    const config = {
+      headers: {
+        "X-RapidAPI-Key": "" + process.env.METEOSTAT_API_KEY,
+        "X-RapidAPI-Host": "meteostat.p.rapidapi.com",
+      },
+    };
+
+    const url = `https://meteostat.p.rapidapi.com/stations/normals?station=${station.text}&start=${start.text}&end=${end.text}`;
+    console.log(url);
+    const response = await axios.get(url, config);
+    return {
+      meteoData: response.data.data,
+    };
+  }
 }

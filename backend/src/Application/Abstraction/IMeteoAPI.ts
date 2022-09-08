@@ -25,4 +25,10 @@ export abstract class IMeteoAPI {
     start: Text,
     end: Text
   ): Promise<MeteoArrayDataSimplify>;
+
+  abstract getMoyenneOfSeasonMeteoData(
+    station: Text,
+    start: Text,
+    end: Text
+  ): Promise<MeteoArrayDataSimplify>;
 }
