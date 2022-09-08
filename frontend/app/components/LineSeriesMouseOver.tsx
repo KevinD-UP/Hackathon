@@ -25,6 +25,7 @@ interface IState {
     items: any;
     crosshairValues : any[];
     value : any;
+    valueSecondSerie : any;
     hints : boolean;
 }
 
@@ -35,9 +36,9 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
         const items = [];
         super(props);
         const items = Array();
-        items.push({title: this.props.normals[1], disabled: false, color: "red"});
+        items.push({title: this.props.normals[1], disabled: false, color: "red", selected : false});
         for(let i in props.lineDataRaw){
-            items.push({title : props.lineDataRaw[i][1], disabled : false})
+            items.push({title : props.lineDataRaw[i][1], disabled : false, selected : false})
         }
 
         super(props);
@@ -45,8 +46,9 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
             index : -1 ,
             items : items,
             crosshairValues: [],
-            value :null,
-            hints :false
+            value : {x:0, y:0},
+            valueSecondSerie : {x:0, y:0},
+            hints :false,
         };
     }
 
@@ -56,17 +58,33 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
         }
     }
 
-    clickHandler = (item: any) => {
+    remindValueSecondSerie = (value : any, i : number) => {
+        if(this.state.hints && this.state.items[i+1].selected){
+            this.setState({valueSecondSerie : value});
+        }
+    }
+
+    legendClickHandler = (item: any) => {
         const {items} =  this.state;
-        item.disabled = !item.disabled;
+        if(this.state.hints && !item.disabled){
+            if(item.selected){
+                item.color= "";
+            }
+            else{
+                item.color = "red";
+            }
+            item.selected = !item.selected;
+
+        }
+        else{
+            item.disabled = !item.disabled;
+        }
         this.setState({items});
     }
 
     buttonClickHandler = () => {
-        this.setState({hints : !this.state.hints});
-        if(!this.state.hints){
-            this.setState({value : null});
-        }
+        this.setState({hints : !this.state.hints, value : {x:0, y:0} , valueSecondSerie : {x:0, y:0}});
+
     }
 
 
@@ -79,6 +97,7 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
         const {index} = this.state;
         const {items} = this.state;
         const {value} =  this.state;
+        const {valueSecondSerie} = this.state;
 
         const yAxis = this.props.yAxis;
 
@@ -93,9 +112,10 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
             <div className='flex bg-slate-300 max-h-full rounded-xl '>
 
                 <div className=' overflow-auto max-h-full overflow-auto w-32'>
-                    <DiscreteColorLegend items={items} onItemClick={this.clickHandler} orientation={"vertical"}  />
+                    <DiscreteColorLegend
+                               items={items} onItemClick={this.legendClickHandler} orientation={"vertical"}  />
                     <button onClick={this.buttonClickHandler}
-                            className={`bg-blue-500 ${!this.state.hints ? "opacity-50" : "" }
+                            className={`bg-blue-500 ${this.state.hints ? "opacity-50" : "" }
                             hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full center`}>
                         {this.state.hints ? "Desactiver hints" : "Activer Hints"}
                     </button>
@@ -105,7 +125,7 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
                     <XYPlot height={300} width={800} margin={{top:20}} xDomain={tickDomainXAxis}
                             yType='linear'  xType='ordinal'
-                            onMouseLeave={() => this.setState({index: -1, crosshairValues: []})}>
+                            onMouseLeave={() => this.setState({index: -1})}>
 
                         <VerticalGridLines  style={{strokeWidth: 2, stroke: "lightgrey"}}/>
                         <HorizontalGridLines style={{strokeWidth: 2, stroke: "lightgrey"}} innerWidth={770}
@@ -121,8 +141,10 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
                         {lineData.map((d, i) => (<LineSeries
                             getNull={(d) => d.y !== null}
-                            data={d} key={`${i+1}`} style={{strokeWidth: 2}}
-                            opacity={items[i+1].disabled ? 0 : 1} stroke={i+1 === index ? "orange" : undefined}
+                            data={d} key={`${i+1}`}
+                            onNearestX={(value, {index} )=> this.remindValueSecondSerie(value, i)}
+                            style={{strokeWidth: `${this.state.items[i+1].selected  ? "3" : "2"}`}}
+                            opacity={items[i+1].disabled ? 0 : 1} stroke={this.state.items[i+1].selected ? "red" : i+1 === index ? "orange" : undefined}
                             />))}
 
                         {lineData.map((d, i) => (<LineSeries
@@ -130,11 +152,6 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
                             data={d} key={`${i+1}-mouseover`}
                             onSeriesMouseOut={() => this.setState({index: -1})}
                             onSeriesMouseOver={() => this.setState({index: i+1})}
-                            onSeriesClick={() => {
-                                const {items} = this.state;
-                                items[i+1].disabled = !items[i+1].disabled;
-                                this.setState({items});
-                            }}
                             stroke="transparent"
                             style={{strokeWidth: 15}}/>))}
 
@@ -145,9 +162,11 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
                             />
 
                         {value ? (
-                            <LineSeries
-                                data={[{x: value.x, y: value.y}, {x: value.x, y: 0}]}
-                                stroke={!this.state.hints ? "transparent" : "black"} />
+                            <LineMarkSeries
+                                data={[{x: value.x, y: value.y}, {x: value.x, y: valueSecondSerie.y}, {x : value.x, y:0}]}
+                                stroke={!this.state.hints ? "transparent" : "black"}
+                                markStyle={{stroke: `${this.state.hints ? "black" : "transparent"}`, strokeWidth: 3 ,
+                                    fill: `${this.state.hints ? "black" : "transparent"}`}} />
                         ) : null
                         }
 
@@ -155,7 +174,7 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
                             <Hint
                                 value={value}
                                 align={{horizontal: 'auto', vertical: 'top' }}>
-                                <div className={`rv-hint__content ${!this.state.hints ? "opacity-0" : ""}`}>{`(${value.x}, ${value.y})`}</div>
+                                <div className={`rv-hint__content ${!this.state.hints ? "opacity-0" : "opacity-0"}`}>{`(${value.x}, ${value.y})`}</div>
                             </Hint>
 
                         ) : null }
