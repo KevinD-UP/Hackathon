@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {} from 'react';
 import {Link, useLoaderData} from "@remix-run/react";
 import LineSeriesMouseOver from "~/components/LineSeriesMouseOver";
 import LineSeriesMouseOverMM from "~/components/LineSeriesMouseOverMM";
@@ -15,9 +15,9 @@ let decade =false;
 
 export const monthNames= ["Janvier","Fevrier","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Decembre"];
 
-export const loader: LoaderFunction = async () => {
+export const loader: LoaderFunction = async ({ params }) => {
     const articlesAxios = await axios.get(`http://localhost:8000/news/2022-09-01/2022-09-01`)
-    const meteoAxios = await axios.get(`http://localhost:8000/monthlymeteostat/07156/${begin}/${end}`)
+    const meteoAxios = await axios.get(`http://localhost:8000/monthlymeteostat/${params.stationId}/${begin}/${end}`)
     if(articlesAxios.status === 200 && meteoAxios.status === 200){
         return json({ meteo: meteoAxios.data, articles: articlesAxios.data})
     }
