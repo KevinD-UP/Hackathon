@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {
-    DiscreteColorLegend,
+    DiscreteColorLegend, Hint,
     HorizontalGridLines,
     LineMarkSeries,
     LineSeries, MarkSeries,
@@ -9,6 +9,8 @@ import {
     XYPlot,
     YAxis
 } from "react-vis";
+
+import moment from "moment";
 import { monthNames } from "~/routes/meteo/$stationId";
 
 interface IProps {
@@ -23,44 +25,56 @@ interface IProps {
 interface IState {
     index: Number;
     items: any;
-    crosshairValues : any[];
     value : any;
     valueSecondSerie : any;
     hints : boolean;
+    hintLineValues : {x: null | string, y: null | number} [];
 }
 
 export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
     constructor(props: IProps) {
-
-        const items = [];
         super(props);
-        const items = Array();
+        const items = [];
+        const hintLinesValues = [];
         items.push({title: this.props.normals[1], disabled: false, color: "red", selected : false});
+        hintLinesValues.push({x: null, y: null});
         for(let i in props.lineDataRaw){
             items.push({title : props.lineDataRaw[i][1], disabled : false, selected : false})
+            hintLinesValues.push({x: null, y: null});
         }
-
-        super(props);
         this.state = {
             index : -1 ,
             items : items,
-            crosshairValues: [],
             value : {x:0, y:0},
             valueSecondSerie : {x:0, y:0},
             hints :false,
+            hintLineValues: hintLinesValues,
         };
     }
 
     remindValue = (value : any) => {
+        const {hintLineValues} =  this.state;
         if(this.state.hints){
-            this.setState({value : value});
+            hintLineValues[0].x = value.x;
+            hintLineValues[0].y = value.y;
+            this.setState({hintLineValues : hintLineValues});
         }
     }
 
     remindValueSecondSerie = (value : any, i : number) => {
-        if(this.state.hints && this.state.items[i+1].selected){
-            this.setState({valueSecondSerie : value});
+        const {hintLineValues} =  this.state;
+        if(this.state.hints){
+            if(!this.state.items[i+1].selected){
+                hintLineValues[i+1].x = null;
+                hintLineValues[i+1].y = null;
+            }
+            else{
+                hintLineValues[i+1].x = value.x;
+                hintLineValues[i+1].y = value.y;
+            }
+
+            this.setState({ hintLineValues : hintLineValues});
         }
     }
 
@@ -72,6 +86,7 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
             }
             else{
                 item.color = "red";
+
             }
             item.selected = !item.selected;
 
@@ -89,7 +104,6 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
 
     render(){
-
         const lineData = [];
         for(let i in this.props.lineDataRaw){
             lineData.push(this.props.lineDataRaw[i][0]);
@@ -97,6 +111,7 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
         const {index} = this.state;
         const {items} = this.state;
         const {value} =  this.state;
+        const {hintLineValues} =  this.state;
         const {valueSecondSerie} = this.state;
 
         const yAxis = this.props.yAxis;
@@ -161,23 +176,20 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
                                     onNearestX={this.remindValue}
                             />
 
-                        {value ? (
-                            <LineMarkSeries
-                                data={[{x: value.x, y: value.y}, {x: value.x, y: valueSecondSerie.y}, {x : value.x, y:0}]}
-                                stroke={!this.state.hints ? "transparent" : "black"}
-                                markStyle={{stroke: `${this.state.hints ? "black" : "transparent"}`, strokeWidth: 3 ,
-                                    fill: `${this.state.hints ? "black" : "transparent"}`}} />
-                        ) : null
-                        }
+                        <LineMarkSeries
+                            data={hintLineValues}
+                            getNull={(d) => d.y !== null}
+                            stroke={!this.state.hints ? "transparent" : "black"}
+                            markStyle={{stroke: `${this.state.hints ? "black" : "transparent"}`, strokeWidth: 3 ,
+                                fill: `${this.state.hints ? "black" : "transparent"}`}} />
 
-                        {value ? (
-                            <Hint
-                                value={value}
-                                align={{horizontal: 'auto', vertical: 'top' }}>
-                                <div className={`rv-hint__content ${!this.state.hints ? "opacity-0" : "opacity-0"}`}>{`(${value.x}, ${value.y})`}</div>
-                            </Hint>
+                        <Hint
+                            value={{x: value.x, y: (value.x+valueSecondSerie.x)/2 }}
+                            align={{horizontal: 'auto', vertical: 'top'}}>
+                            <div
+                                className={`rv-hint__content ${!this.state.hints ? "opacity-0" : ""}`}>{`(${value.x}, ${value.y})`}</div>
+                        </Hint>
 
-                        ) : null }
 
 
                     </XYPlot>
