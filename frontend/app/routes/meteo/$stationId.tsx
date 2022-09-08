@@ -10,7 +10,9 @@ import France from "~/components/france";
 
 const begin = "1980-01-01";
 const end = "2021-12-01";
-let decade =false;
+const beginNormals = 1971;
+const endNormals = 2000;
+let decade =true;
 
 export const monthNames= ["Janvier","Fevrier","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Decembre"];
 
@@ -18,11 +20,11 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     const url = new URL (request.url);
     const begin = `${url.searchParams.get("start")}-01-01`;
     const end =  `${url.searchParams.get("end")}-01-01`;
-
+    const normalsAxios =await axios.get(`http://localhost:8000/monthlymeteostat/normals/${params.stationId}/${beginNormals}/${endNormals}`)
     const articlesAxios = await axios.get(`http://localhost:8000/news/2022-09-01/2022-09-01`)
     const meteoAxios = await axios.get(`http://localhost:8000/monthlymeteostat/${params.stationId}/${begin}/${end}`)
-    if(articlesAxios.status === 200 && meteoAxios.status === 200){
-        return json({ meteo: meteoAxios.data, articles: articlesAxios.data, stationId: params.stationId})
+    if(articlesAxios.status === 200 && meteoAxios.status === 200 && normalsAxios.status === 200 ){
+        return json({ meteo: meteoAxios.data, articles: articlesAxios.data, normals: normalsAxios.data, stationId: params.stationId})
     }
     throw new Error(`Error! status`)
 };
@@ -56,7 +58,7 @@ function  emptyArray(array: any[]) {
 
 
 export default function Graph() {
-    const {meteo, articles, stationId} = useLoaderData();
+    const {meteo, articles, normals, stationId} = useLoaderData();
     const [searchParams] = useSearchParams();
 
     const begin = `${searchParams.get("start")}-01-01`;
@@ -124,10 +126,21 @@ export default function Graph() {
 
                 //on divise les sommes pour avoir la moyenne
                 for(let j=0; j<sumAvgPrcp.length; j++){
-                    sumAvgPrcp[j] = sumAvgPrcp[j]/divAvgPrcp[j];
-                    sumAvgTmp[j]=sumAvgTmp[j]/divAvgTmp[j];
-                    tmpDecadeWithMonth.push({x:monthNames[j],y: sumAvgTmp[j]});
-                    prcpDecadeWithMonth.push({x:monthNames[j],y: sumAvgPrcp[j]});
+                    if(divAvgTmp[j] !=0 ){
+                        sumAvgTmp[j]=sumAvgTmp[j]/divAvgTmp[j];
+                        tmpDecadeWithMonth.push({x:monthNames[j],y: sumAvgTmp[j]});
+                    }
+                    else{
+                        tmpDecadeWithMonth.push({x:monthNames[j],y: null});
+                    }
+                    if(divAvgPrcp[j] != 0){
+                        sumAvgPrcp[j] = sumAvgPrcp[j]/divAvgPrcp[j];
+                        prcpDecadeWithMonth.push({x:monthNames[j],y: sumAvgPrcp[j]});
+                    }
+                    else{
+                        prcpDecadeWithMonth.push({x:monthNames[j],y: null});
+                    }
+
                 }
 
                 //push des moyennes pour la décénnie
@@ -193,9 +206,24 @@ export default function Graph() {
             //une anne de plus additionnee
             cptAnnees +=1;
         }
+
         prcpData= prcpDecadeData;
         avgTemperatureData= avgTempDecadeData;
     }
+
+    let avgTempNormalsData = Array();
+    let prcpNormalsData = Array();
+
+    for(let i =0; i<normals.length; i++) {
+        avgTempNormalsData.push({x: monthNames[i],y: normals[i].tavg});
+        prcpNormalsData.push({x:monthNames[i], y: normals[i].prcp});
+    }
+
+    let avgTempNormalsTuple =[avgTempNormalsData, "normales " + beginNormals + "-" + endNormals];
+    let prcpNormalsTuple = [prcpNormalsData, "normales " + beginNormals + "-" + endNormals];
+
+   // avgTemperatureData.push(avgTempNormalsTuple);
+    //prcpData.push(prcpNormalsTuple);
 
     return (
       <div className="flex h-full min-h-screen flex-col justify-between">
@@ -260,8 +288,7 @@ export default function Graph() {
                       <div className='  flex-col -mt-8 h-1/2 '>
                           <h2 className="text-4xl font-bold text-white text-center -mb-4">Anxiété population</h2>
                           <div className='bg-slate-800 h-full min-h-full rounded-xl'>
-                              <LevelAnxiety score={articles.averageEmotionScore}/>
-                              <ArticleCarousel articles={articles.articlesWithAnalysis}/>
+
                           </div>
                       </div>
                       <div className=' flex-col -mt-8 h-1/2'>
@@ -276,10 +303,10 @@ export default function Graph() {
                       <h2 className="text-4xl font-bold text-white text-center -mb-4">Météorologie</h2>
                       <div className='bg-slate-800 h-full  rounded-xl flex flex-col  justify-around  '>
                           <div className='h-2/5  w-full'>
-                              <LineSeriesMouseOver lineDataRaw={avgTemperatureData}  yAxis={"°C"} key={1} begin={begin} end={end}/>
+                              <LineSeriesMouseOver lineDataRaw={avgTemperatureData}   normals={avgTempNormalsTuple} yAxis={"°C"} key={1} begin={begin} end={end}/>
                           </div>
                           <div className='h-2/5 w-full'>
-                              <LineSeriesMouseOver lineDataRaw={prcpData} yAxis={"mm"} key={2} begin={begin} end={end}/>
+                              <LineSeriesMouseOver lineDataRaw={prcpData} yAxis={"mm"} normals={prcpNormalsTuple} key={2} begin={begin} end={end}/>
                           </div>
                       </div>
                   </div>

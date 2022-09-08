@@ -2,7 +2,8 @@ import React, {Component} from "react";
 import {
     DiscreteColorLegend,
     HorizontalGridLines,
-    LineSeries,
+    LineMarkSeries,
+    LineSeries, MarkSeries,
     VerticalGridLines,
     XAxis,
     XYPlot,
@@ -16,11 +17,15 @@ interface IProps {
     end : string;
     key: number;
     yAxis : string;
+    normals : any;
 }
 
 interface IState {
     index: Number;
     items: any;
+    crosshairValues : any[];
+    value : any;
+    hints : boolean;
 }
 
 export default  class LineSeriesMouseOver extends Component<IProps, IState> {
@@ -28,6 +33,9 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
     constructor(props: IProps) {
 
         const items = [];
+        super(props);
+        const items = Array();
+        items.push({title: this.props.normals[1], disabled: false, color: "red"});
         for(let i in props.lineDataRaw){
             items.push({title : props.lineDataRaw[i][1], disabled : false})
         }
@@ -35,14 +43,30 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
         super(props);
         this.state = {
             index : -1 ,
-            items : items
+            items : items,
+            crosshairValues: [],
+            value :null,
+            hints :false
         };
+    }
+
+    remindValue = (value : any) => {
+        if(this.state.hints){
+            this.setState({value : value});
+        }
     }
 
     clickHandler = (item: any) => {
         const {items} =  this.state;
         item.disabled = !item.disabled;
         this.setState({items});
+    }
+
+    buttonClickHandler = () => {
+        this.setState({hints : !this.state.hints});
+        if(!this.state.hints){
+            this.setState({value : null});
+        }
     }
 
 
@@ -54,42 +78,14 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
         }
         const {index} = this.state;
         const {items} = this.state;
+        const {value} =  this.state;
 
         const yAxis = this.props.yAxis;
 
+        const YMAX = 15;
+
         const  tickValuesXAxis = monthNames;
         const tickDomainXAxis = tickValuesXAxis;
-
-       /*
-
-        const tickValuesYAxis = [-20,-15,-10,-5, 0,5,10,15,20,25,30,35,40,45];
-        const tickValuesXGrid = [-15,-10,-5,0,5,10,15,20,25,30,35,40];
-
-        const tickValuesXAxis = Array();
-        const tickDomainXAxis = Array();
-
-        const maxTicksX = 12;
-
-        let frequenceTicks = 1;
-
-        const momentBegin = moment(new Date(this.props.begin));
-        const momentEnd = moment(new Date(this.props.end));
-
-
-        const numberMonth = momentEnd.diff(momentBegin,"months");
-        frequenceTicks = Math.ceil(numberMonth/maxTicksX);
-
-        let i=1;
-        while(tickValuesXAxis.length <numberMonth && tickValuesXAxis.length < maxTicksX){
-            const dateString = momentBegin.month()+1 + "/" + momentBegin.year();
-            tickDomainXAxis.push(dateString);
-            if(i==1){
-                tickValuesXAxis.push(dateString);
-            }
-            i = i == frequenceTicks ? 1 : i+1 ;
-            momentBegin.add(1,"month");
-        }*/
-
 
 
         return(
@@ -98,13 +94,18 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
                 <div className=' overflow-auto max-h-full overflow-auto w-32'>
                     <DiscreteColorLegend items={items} onItemClick={this.clickHandler} orientation={"vertical"}  />
+                    <button onClick={this.buttonClickHandler}
+                            className={`bg-blue-500 ${!this.state.hints ? "opacity-50" : "" }
+                            hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full center`}>
+                        {this.state.hints ? "Desactiver hints" : "Activer Hints"}
+                    </button>
                 </div>
 
                 <div className=' rounded-xl  bg-white min-w-fit flex-1 mr-0 flex justify-center overflow-hidden'>
 
                     <XYPlot height={300} width={800} margin={{top:20}} xDomain={tickDomainXAxis}
                             yType='linear'  xType='ordinal'
-                            onMouseLeave={() => this.setState({index: -1})}>
+                            onMouseLeave={() => this.setState({index: -1, crosshairValues: []})}>
 
                         <VerticalGridLines  style={{strokeWidth: 2, stroke: "lightgrey"}}/>
                         <HorizontalGridLines style={{strokeWidth: 2, stroke: "lightgrey"}} innerWidth={770}
@@ -120,22 +121,45 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
                         {lineData.map((d, i) => (<LineSeries
                             getNull={(d) => d.y !== null}
-                            data={d} key={`${i}`} style={{strokeWidth: 2}}
-                            opacity={items[i].disabled ? 0 : 1}
-                            stroke={i === index ? "orange" : undefined}/>))}
+                            data={d} key={`${i+1}`} style={{strokeWidth: 2}}
+                            opacity={items[i+1].disabled ? 0 : 1} stroke={i+1 === index ? "orange" : undefined}
+                            />))}
 
                         {lineData.map((d, i) => (<LineSeries
                             getNull={(d) => d.y !== null}
-                            data={d} key={`${i}-mouseover`}
+                            data={d} key={`${i+1}-mouseover`}
                             onSeriesMouseOut={() => this.setState({index: -1})}
-                            onSeriesMouseOver={() => this.setState({index: i})}
+                            onSeriesMouseOver={() => this.setState({index: i+1})}
                             onSeriesClick={() => {
                                 const {items} = this.state;
-                                items[i].disabled = !items[i].disabled;
+                                items[i+1].disabled = !items[i+1].disabled;
                                 this.setState({items});
                             }}
                             stroke="transparent"
-                            style={{strokeWidth: 10}}/>))}
+                            style={{strokeWidth: 15}}/>))}
+
+                        <LineSeries key={"normals"} opacity={items[0].disabled ? 0 : 1}
+                            getNull={(d) => d.y !== null} stroke={"red"}
+                            data={this.props.normals[0]}  style={{strokeWidth: 3}}
+                                    onNearestX={this.remindValue}
+                            />
+
+                        {value ? (
+                            <LineSeries
+                                data={[{x: value.x, y: value.y}, {x: value.x, y: 0}]}
+                                stroke={!this.state.hints ? "transparent" : "black"} />
+                        ) : null
+                        }
+
+                        {value ? (
+                            <Hint
+                                value={value}
+                                align={{horizontal: 'auto', vertical: 'top' }}>
+                                <div className={`rv-hint__content ${!this.state.hints ? "opacity-0" : ""}`}>{`(${value.x}, ${value.y})`}</div>
+                            </Hint>
+
+                        ) : null }
+
 
                     </XYPlot>
 
@@ -145,3 +169,4 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
         );
     }
 }
+
