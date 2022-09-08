@@ -1,4 +1,4 @@
-import React, {useState, useCallback, CSSProperties, useEffect, } from 'react';
+import React, {} from 'react';
 import {Link, useLoaderData} from "@remix-run/react";
 import LineSeriesMouseOver from "~/components/LineSeriesMouseOver";
 import LineSeriesMouseOverMM from "~/components/LineSeriesMouseOverMM";
@@ -11,13 +11,11 @@ import France from "~/components/france";
 
 const begin = "2020-01-01";
 const end = "2021-02-01";
-const period ="day";
+const period = "day";
 const meteoPath = period == "day" ? "daily" : "monthly";
 
 export const loader: LoaderFunction = async () => {
-    const date = new Date()
-    const formattedDate = date.toISOString().split('T')[0]
-    const articlesAxios = await axios.get(`http://localhost:8000/news/${formattedDate}/${formattedDate}`)
+    const articlesAxios = await axios.get(`http://localhost:8000/news/2022-09-07/2022-09-07`)
     const meteoAxios = await axios.get(`http://localhost:8000/${meteoPath}meteostat/07156/${begin}/${end}`)
     if(articlesAxios.status === 200 && meteoAxios.status === 200){
         return json({meteo: meteoAxios.data, articles: articlesAxios.data})
@@ -46,11 +44,11 @@ export default function Graph() {
 
     const {meteo, articles} = useLoaderData();
 
-    const avgTemperatureData = Array();
-    const minTemperatureData =  Array();
-    const maxTemperatureData = Array();
-    const prcpData =  Array();
-    const snowData= Array();
+    const avgTemperatureData = [];
+    const minTemperatureData =  [];
+    const maxTemperatureData = [];
+    const prcpData =  [];
+    const snowData= [];
 
     for (let i in meteo){
         let shortDate = getMonthDate(meteo[i].date);
