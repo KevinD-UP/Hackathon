@@ -11,16 +11,15 @@ import {
 } from "react-vis";
 
 import moment from "moment";
+import {monthNames} from "~/routes/graph";
 
 interface IProps {
     lineDataRaw : any;
     begin : string;
     end : string;
-    period: string;
 }
 
 interface IState {
-    period : string;
     index: Number;
     items: any;
 }
@@ -36,7 +35,6 @@ export default  class LineSeriesMouseOverMM extends Component<IProps, IState> {
 
         super(props);
         this.state = {
-            period : this.props.period,
             index : -1 ,
             items : items
         };
@@ -60,50 +58,33 @@ export default  class LineSeriesMouseOverMM extends Component<IProps, IState> {
 
         const yAxis = "mm";
 
-        const maxTicksX = 15;
 
-        const tickValuesXAxis = Array();
+
+        const  tickValuesXAxis = monthNames;
+        const tickDomainXAxis = tickValuesXAxis;
+
+       /* const tickValuesXAxis = Array();
         const tickDomainXAxis = Array();
+
+        const maxTicksX = 12;
 
         let frequenceTicks = 1;
 
         const momentBegin = moment(new Date(this.props.begin));
         const momentEnd = moment(new Date(this.props.end));
+        const numberMonth = momentEnd.diff(momentBegin,"months");
 
-        if(this.state.period === "month"){
-            const numberMonth = momentEnd.diff(momentBegin,"months");
-            frequenceTicks = Math.ceil(numberMonth/maxTicksX);
+        frequenceTicks = Math.ceil(numberMonth/maxTicksX);
+        let i=1;
 
-            let i=1;
-            while( tickValuesXAxis.length < maxTicksX){
-                const dateString = momentBegin.month()+1 + "/" + momentBegin.year();
-                tickDomainXAxis.push(dateString);
-                if(i==1){
-                    tickValuesXAxis.push(dateString);
-                }
-                i = i == frequenceTicks ? 1 : i+1 ;
-                momentBegin.add(1,"month");
+        while( tickValuesXAxis.length < maxTicksX){
+            const dateString = momentBegin.month()+1 + "/" + momentBegin.year();
+            tickDomainXAxis.push(dateString);
+            if(i==1){
+                tickValuesXAxis.push(dateString);
             }
-        }
-
-        else if(this.state.period === "day"){
-            const numberDay = momentEnd.diff(momentBegin,"days");
-            frequenceTicks = Math.ceil(numberDay/maxTicksX);
-
-            let i=1;
-            while( tickValuesXAxis.length < maxTicksX){
-                const dateStringDay = momentBegin.date() + "/" +  momentBegin.month()+1 +
-                    "/" + momentBegin.year().toString().slice(2);
-                tickDomainXAxis.push(dateStringDay);
-                if(i==1){
-                    tickValuesXAxis.push(dateStringDay);
-                }
-                i = i == frequenceTicks ? 1 : i+1 ;
-                momentBegin.add(1,"day");
-            }
-        }
-
-        console.log(lineData);
+            i = i == frequenceTicks ? 1 : i+1 ;
+            momentBegin.add(1,"month");}*/
 
         return(
 
@@ -129,12 +110,14 @@ export default  class LineSeriesMouseOverMM extends Component<IProps, IState> {
                                title={yAxis} tickSizeInner={0}/>
 
                         {lineData.map((d, i) => (<LineSeries
-                            data={d} key={`${i}`} style={{strokeWidth: 4}}
+                            getNull={(d) => d.y !== null}
+                            data={d} key={`${i}`} style={{strokeWidth: 2}}
                             opacity={items[i].disabled ? 0 : 1}
                             stroke={i === index ? "orange" : undefined}/>))}
 
                         {lineData.map((d, i) => (<LineSeries
                             data={d} key={`${i}-mouseover`}
+                            getNull={(d) => d.y !== null}
                             onSeriesMouseOut={() => this.setState({index: -1})}
                             onSeriesMouseOver={() => this.setState({index: i})}
                             onSeriesClick={() => {
