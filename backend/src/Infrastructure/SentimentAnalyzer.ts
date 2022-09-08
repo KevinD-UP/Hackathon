@@ -7,7 +7,6 @@ import { ISentimentAnalyzer } from "../Application/Abstraction/ISentimentAnalyze
 export class SentimentAnalyzer extends ISentimentAnalyzer {
   analyze(text: Text): AnalysisResult {
     const result = sentiment(text.text);
-    console.log(result);
     const wholeTextScore = result.score;
     return AnalysisResult.createFromProps({ score: wholeTextScore });
   }
