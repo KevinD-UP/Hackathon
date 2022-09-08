@@ -14,6 +14,8 @@ interface IProps {
     lineDataRaw : any;
     begin : string;
     end : string;
+    key: number;
+    yAxis : string;
 }
 
 interface IState {
@@ -53,7 +55,7 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
         const {index} = this.state;
         const {items} = this.state;
 
-        const yAxis = "°C";
+        const yAxis = this.props.yAxis;
 
         const  tickValuesXAxis = monthNames;
         const tickDomainXAxis = tickValuesXAxis;

@@ -1,7 +1,6 @@
 import React, {} from 'react';
 import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import LineSeriesMouseOver from "~/components/LineSeriesMouseOver";
-import LineSeriesMouseOverMM from "~/components/LineSeriesMouseOverMM";
 import ArticleCarousel from "~/components/ArticleCarousel";
 import LevelAnxiety from "~/components/LevelAnxiety";
 import axios from "axios";
@@ -9,7 +8,9 @@ import type {LoaderFunction} from "@remix-run/server-runtime";
 import { json } from "@remix-run/node";
 import France from "~/components/france";
 
-
+const begin = "1980-01-01";
+const end = "2021-12-01";
+let decade =false;
 
 export const monthNames= ["Janvier","Fevrier","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Decembre"];
 
@@ -275,10 +276,10 @@ export default function Graph() {
                       <h2 className="text-4xl font-bold text-white text-center -mb-4">Météorologie</h2>
                       <div className='bg-slate-800 h-full  rounded-xl flex flex-col  justify-around  '>
                           <div className='h-2/5  w-full'>
-                              <LineSeriesMouseOver lineDataRaw={avgTemperatureData}   begin={begin} end={end}/>
+                              <LineSeriesMouseOver lineDataRaw={avgTemperatureData}  yAxis={"°C"} key={1} begin={begin} end={end}/>
                           </div>
                           <div className='h-2/5 w-full'>
-                              <LineSeriesMouseOverMM lineDataRaw={prcpData}  begin={begin} end={end}/>
+                              <LineSeriesMouseOver lineDataRaw={prcpData} yAxis={"mm"} key={2} begin={begin} end={end}/>
                           </div>
                       </div>
                   </div>
