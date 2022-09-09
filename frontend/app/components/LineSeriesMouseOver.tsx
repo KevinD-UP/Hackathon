@@ -60,7 +60,7 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
         if(this.state.hints){
             hintLineValues[hintLineValues.length-1].x = value.x;
             hintLineValues[hintLineValues.length-1].y = value.y;
-            const hintLineValuesNoNull = Array();
+            const hintLineValuesNoNull = [];
             for(let i =0; i< hintLineValues.length; i++){
                 if(hintLineValues[i].x !== null && hintLineValues[i].y !== null){
                     hintLineValuesNoNull.push(hintLineValues[i]);
@@ -72,7 +72,7 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
     remindValueSecondSerie = (value : any, i : number) => {
         const {hintLineValues} =  this.state;
-        const hintLineValuesNoNull = Array();
+        const hintLineValuesNoNull = [];
         if(this.state.hints){
             if(!this.state.items[i].selected){
                 hintLineValues[i].x = null;
@@ -85,7 +85,7 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
             }
             else{
                 hintLineValues[i].x = value.x;
-                hintLineValues[i].y = value.y;const hintLineValuesNoNull = Array();
+                hintLineValues[i].y = value.y;const hintLineValuesNoNull = [];
                 for(let i =0; i< hintLineValues.length; i++){
                     if(hintLineValues[i].x !== null && hintLineValues[i].y !== null){
                         hintLineValuesNoNull.push(hintLineValues[i]);
@@ -153,7 +153,7 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
                             className={`${this.state.hints ? "bg-red-500" : "bg-green-500" }
                             hover:opacity-50 
                              text-white font-bold py-2 px-4 rounded-full center`}>
-                        {this.state.hints ? "Desactiver hints" : "Activer Hints"}
+                        {this.state.hints ? "Afficher variations" : "Cacher variations"}
                     </button>
                 </div>
 
