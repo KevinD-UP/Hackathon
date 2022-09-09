@@ -228,7 +228,7 @@ export default function Graph() {
       <div className="flex h-full min-h-screen flex-col justify-between">
           <header className="flex items-center justify-between bg-slate-800 p-4 text-white">
               <h1 className="text-3xl font-bold">
-                  <Link to=".">Réchauffement Climatique</Link>
+                  <Link to=".">Evolution climatique en France</Link>
               </h1>
               <form action={`/meteo/${stationId}`} method="get">
                   <div className="flex justify-end items-center">
