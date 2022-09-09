@@ -208,7 +208,7 @@ export default function France () {
       projection="geoMercator"
       className={"h-full w-full"}
     >
-      <ZoomableGroup center={[2.213749, 46.227638]} zoom={3.5}>
+      <ZoomableGroup center={[2.213749, 46.227638]} zoom={4}>
         <Geographies geography={geoUrl}>
           {({ geographies }) =>
             geographies.map((geo) => (

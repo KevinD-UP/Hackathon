@@ -271,6 +271,7 @@ export default function Graph() {
                             defaultChecked={!searchParams.get("decade") ? false : searchParams.get("decade") === "on"}
                           /> Décennie
                       </div>
+                      <input type = "hidden" name = "city" value = {!searchParams.get("city") ? "Paris" : searchParams.get("city")! }/>
                       <div className="w-3/12 flex justify-center">
                           <button type="submit"
                                   className="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Valider
@@ -284,14 +285,14 @@ export default function Graph() {
               <div className="flex  h-4/5 w-11/12  justify-around ">
 
                   <div className='flex-col w-3/12 space-y-14'>
-                      <div className='  flex-col -mt-8 h-1/2 '>
+                      <div className='  flex-col -mt-8 h-2/3 '>
                           <h2 className="text-4xl font-bold text-white text-center -mb-4">Anxiété population</h2>
                           <div className='bg-slate-800 h-full min-h-full rounded-xl'>
                                 <LevelAnxiety score={articles.averageEmotionScore}/>
                               <ArticleCarousel articles={articles.articlesWithAnalysis}/>
                           </div>
                       </div>
-                      <div className=' flex-col -mt-8 h-1/2'>
+                      <div className=' flex-col -mt-8 h-2/3'>
                           <div className='bg-white h-full min-h-full rounded-xl'>
                             <France />
                           </div>
@@ -299,16 +300,15 @@ export default function Graph() {
 
                   </div>
 
-                  <div className=' w-7/12 flex-col -mt-8 '>
-                      <h2 className="text-4xl font-bold text-white text-center  mb-20">Temperature Moyenne de {city}</h2>
-                      <div className='bg-slate-800 h-full max-h-full rounded-xl flex flex-col  justify-around  '>
+                  <div className=' w-7/12 flex-col -mt-8'>
+                      <h2 className="text-4xl font-bold text-white text-center  mb-6">Température Moyenne de {city}</h2>
                           <div className='max-h-1/2  w-full'>
                               <LineSeriesMouseOver lineDataRaw={avgTemperatureData}   normals={avgTempNormalsTuple} yAxis={"°C"} key={1} begin={begin} end={end}/>
                           </div>
-                          <div className='max-h-1/2 w-full'>
+                      <h2 className="text-4xl font-bold text-white text-center  mb-6 mt-20">Précipitation Moyenne de {city}</h2>
+                          <div className='max-h-1/2  w-full'>
                               <LineSeriesMouseOver lineDataRaw={prcpData} yAxis={"mm"} normals={prcpNormalsTuple} key={2} begin={begin} end={end}/>
                           </div>
-                      </div>
                   </div>
               </div>
           </main>
