@@ -64,6 +64,7 @@ export default function Graph() {
     const begin = `${searchParams.get("start")}-01-01`;
     const end = `${searchParams.get("end")}-01-01`;
     let decade = searchParams.get("decade") === "on";
+    const city = searchParams.get("city") === undefined ? "Paris" : searchParams.get("city");
 
     let avgTemperatureData = [];
     let prcpData =  [];
@@ -299,7 +300,7 @@ export default function Graph() {
                   </div>
 
                   <div className=' w-7/12 flex-col -mt-8 '>
-                      <h2 className="text-4xl font-bold text-white text-center -mb-4">Météorologie</h2>
+                      <h2 className="text-4xl font-bold text-white text-center  mb-20">Temperature Moyenne de {city}</h2>
                       <div className='bg-slate-800 h-full max-h-full rounded-xl flex flex-col  justify-around  '>
                           <div className='max-h-1/2  w-full'>
                               <LineSeriesMouseOver lineDataRaw={avgTemperatureData}   normals={avgTempNormalsTuple} yAxis={"°C"} key={1} begin={begin} end={end}/>

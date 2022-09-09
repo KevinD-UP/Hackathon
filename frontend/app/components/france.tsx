@@ -225,8 +225,8 @@ export default function France () {
         </Geographies>
         {markers.map(({id, name, coordinates, markerOffset }) => (
           <Link key={`link-to-${id}`}
-                onClick={() => {window.location.href=`/meteo/${id}?start=${searchParams.get('start')}&end=${searchParams.get('end')}&decade=${searchParams.get('decade')}`}}
-                to={(`/meteo/${id}?start=${searchParams.get('start')}&end=${searchParams.get('end')}&decade=${searchParams.get('decade')}`)}>
+                onClick={() => {window.location.href=`/meteo/${id}?start=${searchParams.get('start')}&end=${searchParams.get('end')}&decade=${searchParams.get('decade')}&city=${name}`}}
+                to={(`/meteo/${id}?start=${searchParams.get('start')}&end=${searchParams.get('end')}&decade=${searchParams.get('decade')}&city=${name}`)}>
           <Marker key={name} coordinates={coordinates as [number, number]}>
             <circle r={2} fill="#F00" stroke="grey" strokeWidth={1} />
             <text
