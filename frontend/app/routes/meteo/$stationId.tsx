@@ -21,7 +21,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     const begin = `${url.searchParams.get("start")}-01-01`;
     const end =  `${url.searchParams.get("end")}-01-01`;
     const normalsAxios =await axios.get(`http://localhost:8000/monthlymeteostat/normals/${params.stationId}/${beginNormals}/${endNormals}`)
-    const articlesAxios = await axios.get(`http://localhost:8000/news/2022-09-01/2022-09-01`)
+    const articlesAxios = await axios.get(`http://localhost:8000/news/2022-08-31/2022-08-31`)
     const meteoAxios = await axios.get(`http://localhost:8000/monthlymeteostat/${params.stationId}/${begin}/${end}`)
     if(articlesAxios.status === 200 && meteoAxios.status === 200 && normalsAxios.status === 200 ){
         return json({ meteo: meteoAxios.data, articles: articlesAxios.data, normals: normalsAxios.data, stationId: params.stationId})
@@ -274,7 +274,7 @@ export default function Graph() {
                       <input type = "hidden" name = "city" value = {!searchParams.get("city") ? "Paris" : searchParams.get("city")! }/>
                       <div className="w-3/12 flex justify-center">
                           <button type="submit"
-                                  className="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Valider
+                                  className="inline-block px-6 py-2.5 bg-gradient-to-r from-green-400 to-blue-500 hover:from-pink-500 hover:to-yellow-500 rounded">Valider
                           </button>
                       </div>
                   </div>

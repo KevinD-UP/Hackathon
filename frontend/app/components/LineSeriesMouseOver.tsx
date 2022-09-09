@@ -150,10 +150,10 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
                     <DiscreteColorLegend height={325}
                                items={items} onItemClick={this.legendClickHandler} orientation={"vertical"}  />
                     <button onClick={this.buttonClickHandler}
-                            className={`${this.state.hints ? "bg-red-500" : "bg-green-500" }
+                            className={`${this.state.hints ? "bg-gradient-to-r from-pink-500 to-yellow-500" : "bg-gradient-to-r from-green-400 to-blue-500" }
                             hover:opacity-50 
                              text-white font-bold py-2 px-4 rounded-full center`}>
-                        {this.state.hints ? "Afficher variations" : "Cacher variations"}
+                        {this.state.hints ? "Cacher variations" : "Afficher variations"}
                     </button>
                 </div>
 
