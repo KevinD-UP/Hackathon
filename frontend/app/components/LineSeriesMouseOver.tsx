@@ -29,6 +29,7 @@ interface IState {
     hints : boolean;
     hintLineValues : {x: null | string, y: null | number} [];
     lastDrawLocation :any ;
+    hintLineValuesNoNull : {x: string, y: number} [];
 }
 
 export default  class LineSeriesMouseOver extends Component<IProps, IState> {
@@ -37,17 +38,19 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
         super(props);
         const items = [];
         const hintLinesValues = [];
-        items.push({title: this.props.normals[1], disabled: false, color: "red", selected : false});
+
         hintLinesValues.push({x: null, y: null});
         for(let i in props.lineDataRaw){
-            items.push({title : props.lineDataRaw[i][1], disabled : false, selected : false})
+            items.push({title : props.lineDataRaw[i][1], disabled : false, selected : false, })
             hintLinesValues.push({x: null, y: null});
         }
+        items.push({title: this.props.normals[1], disabled: false, color: "red", selected : false});
         this.state = {
             index : -1 ,
             items : items,
             hints :false,
             hintLineValues: hintLinesValues,
+            hintLineValuesNoNull : [],
             lastDrawLocation : null
         };
     }
@@ -55,25 +58,42 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
     remindValue = (value : any) => {
         const {hintLineValues} =  this.state;
         if(this.state.hints){
-            hintLineValues[0].x = value.x;
-            hintLineValues[0].y = value.y;
-            this.setState({hintLineValues : hintLineValues});
+            hintLineValues[hintLineValues.length-1].x = value.x;
+            hintLineValues[hintLineValues.length-1].y = value.y;
+            const hintLineValuesNoNull = Array();
+            for(let i =0; i< hintLineValues.length; i++){
+                if(hintLineValues[i].x !== null && hintLineValues[i].y !== null){
+                    hintLineValuesNoNull.push(hintLineValues[i]);
+                }
+            }
+            this.setState({hintLineValues : hintLineValues, hintLineValuesNoNull : hintLineValuesNoNull});
         }
     }
 
     remindValueSecondSerie = (value : any, i : number) => {
         const {hintLineValues} =  this.state;
+        const hintLineValuesNoNull = Array();
         if(this.state.hints){
-            if(!this.state.items[i+1].selected){
-                hintLineValues[i+1].x = null;
-                hintLineValues[i+1].y = null;
+            if(!this.state.items[i].selected){
+                hintLineValues[i].x = null;
+                hintLineValues[i].y = null;
+                for(let i =0; i< hintLineValues.length; i++){
+                    if(hintLineValues[i].x !== null && hintLineValues[i].y !== null){
+                        hintLineValuesNoNull.push(hintLineValues[i]);
+                    }
+                }
             }
             else{
-                hintLineValues[i+1].x = value.x;
-                hintLineValues[i+1].y = value.y;
+                hintLineValues[i].x = value.x;
+                hintLineValues[i].y = value.y;const hintLineValuesNoNull = Array();
+                for(let i =0; i< hintLineValues.length; i++){
+                    if(hintLineValues[i].x !== null && hintLineValues[i].y !== null){
+                        hintLineValuesNoNull.push(hintLineValues[i]);
+                    }
+                }
             }
 
-            this.setState({ hintLineValues : hintLineValues});
+            this.setState({ hintLineValues : hintLineValues, hintLineValuesNoNull : hintLineValuesNoNull});
         }
     }
 
@@ -97,26 +117,30 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
     }
 
     buttonClickHandler = () => {
-        this.setState({hints : !this.state.hints});
+        if(this.state.hints){
+            this.setState({hints : !this.state.hints,  hintLineValuesNoNull: []});
+        }
+        else{
+            this.setState({hints : !this.state.hints});
+        }
 
     }
 
 
     render(){
+
         const lineData = [];
         for(let i in this.props.lineDataRaw){
             lineData.push(this.props.lineDataRaw[i][0]);
         }
         const {index} = this.state;
         const {items} = this.state;
-        const {hintLineValues} =  this.state;
         const {lastDrawLocation} =  this.state;
         const yAxis = this.props.yAxis;
 
 
         const  tickValuesXAxis = monthNames;
         const tickDomainXAxis = tickValuesXAxis;
-
 
         return(
 
@@ -137,9 +161,7 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
                     <XYPlot height={400} width={800} margin={{top:20}} xDomain={tickDomainXAxis}
                             yType='linear'  xType='ordinal'
-                            animation colorRange={['lightblue','blue','darkblue','black']}
-                            colorDomain={lineData.map((d,i) => (i*(lineData.length/4)))}
-                            colorType='linear'
+                            animation
                             yDomain={
                                 lastDrawLocation && [lastDrawLocation.bottom, lastDrawLocation.top]
                             }
@@ -159,43 +181,47 @@ export default  class LineSeriesMouseOver extends Component<IProps, IState> {
 
                         {lineData.map((d, i) => (<LineSeries
                             getNull={(d) => d.y !== null}
-                            data={d} key={`${i+1}`}
+                            data={d} key={`${i}`}
                             onNearestX={(value, {index} )=> this.remindValueSecondSerie(value, i)}
-                            style={{strokeWidth: `${this.state.items[i+1].selected  ? "4" : "3"}`}}
-                            color={i}
-                            opacity={items[i+1].disabled ? 0 : 1} stroke={this.state.items[i+1].selected ? "red" : (i+1 === index ? "orange" : undefined)}
+                            style={{strokeWidth: `${this.state.items[i].selected  ? "4" : "3"}`}}
+                            opacity={items[i].disabled ? 0 : 1} stroke={this.state.items[i].selected ? "red" : (i === index ? "orange" : undefined)}
                             />))}
 
                         {lineData.map((d, i) => (<LineSeries
                             getNull={(d) => d.y !== null}
-                            data={d} key={`${i+1}-mouseover`}
+                            data={d} key={`${i}-mouseover`}
                             onSeriesMouseOut={() => this.setState({index: -1})}
-                            onSeriesMouseOver={() => this.setState({index: i+1})}
+                            onSeriesMouseOver={() => this.setState({index: i})}
                             stroke="transparent"
                             style={{strokeWidth: 15}}/>))}
 
-                        <LineSeries key={"normals"} opacity={items[0].disabled ? 0 : 1}
+                        <LineSeries key={"normals"} opacity={items[items.length-1].disabled ? 0 : 1}
                             getNull={(d) => d.y !== null} stroke={"red"}
                             data={this.props.normals[0]}  style={{strokeWidth: 4}}
                                     onNearestX={this.remindValue}
                             />
 
+
+
                         <LineMarkSeries
-                            data={hintLineValues}
-                            getNull={(d) => d.y !== null}
-                            stroke={!this.state.hints ? "transparent" : "black"}
+                            data={this.state.hintLineValuesNoNull}
+                            stroke={this.state.hints ? "black" : "black"}
                             markStyle={{stroke: `${this.state.hints ? "black" : "transparent"}`, strokeWidth: 3 ,
                                 fill: `${this.state.hints ? "black" : "transparent"}`}} />
 
-                        {hintLineValues.slice(0,hintLineValues.length-1).map((d, i) => (<Hint
-                            getNull={() => d.y !== null && d.x!== null && hintLineValues[i+1] && hintLineValues[i+1].y !== null}
-                            value={{x: d.x, y : (hintLineValues[i+1].y + d.y)/2 }}
-                            key={`${i}-hint`} align={{horizontal: 'left', vertical: 'top'}}>
+
+                        {this.state.hintLineValuesNoNull.map((d, i) => (<Hint
+
+                        value={{x: d.x, y : `${this.state.hintLineValuesNoNull.length > i+1 ? (this.state.hintLineValuesNoNull[i+1].y + d.y)/2 : null}` }}
+                        key={`${i}-hint`} align={{horizontal: 'auto', vertical: 'auto'}}>
+                            {this.state.hints && this.state.hintLineValuesNoNull.length > i+1 ?
                                 <div
-                                    className={` rv-hint__content
-                                     ${!this.state.hints ? "opacity-0" : ""}`}>{`${Number(Math.abs(d.y - hintLineValues[i+1].y )).toFixed(1)} ${yAxis}`}</div>
-                            </Hint>
-                            ))}
+                                    className={` rv-hint__content`}>{`${Number(Math.abs(d.y - this.state.hintLineValuesNoNull[i+1].y )).toFixed(1)} ${yAxis}`}</div>
+                                : null
+                            }
+
+                    </Hint>)) }
+
 
 
                         <Highlight
