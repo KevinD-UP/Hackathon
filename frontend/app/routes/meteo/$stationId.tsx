@@ -211,8 +211,8 @@ export default function Graph() {
         avgTemperatureData= avgTempDecadeData;
     }
 
-    let avgTempNormalsData = Array();
-    let prcpNormalsData = Array();
+    let avgTempNormalsData = [];
+    let prcpNormalsData = [];
 
     for(let i =0; i<normals.length; i++) {
         avgTempNormalsData.push({x: monthNames[i],y: normals[i].tavg});
@@ -230,8 +230,8 @@ export default function Graph() {
                   <Link to=".">Réchauffement Climatique</Link>
               </h1>
               <form action={`/meteo/${stationId}`} method="get">
-                  <div className="flex justify-end">
-                      <div className="mb-3 w-3/12 ">
+                  <div className="flex justify-end items-center">
+                      <div className="mb-3 w-48">
                           <label htmlFor="startDate" className="form-label inline-block mb-2 text-white font-bold">Date de départ</label>
                           <input
                             type="number"
@@ -239,14 +239,14 @@ export default function Graph() {
                             max="2020"
                             step="10"
                             defaultValue={!searchParams.get("start")?"1950":searchParams.get("start")!}
-                            className="form-control block w-3/4 px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                            className="form-control block w-28 px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                             id="startDate"
                             placeholder="1950"
                             pattern="^[0-9]*$"
                             name = "start"
                           />
                       </div>
-                      <div className="mb-3 w-3/12 ">
+                      <div className="mb-3 w-48 ">
                           <label htmlFor="EndDate" className="form-label inline-block mb-2 text-white font-bold">Date de fin</label>
                           <input
                             type="number"
@@ -254,14 +254,14 @@ export default function Graph() {
                             max="2020"
                             step="10"
                             defaultValue={!searchParams.get("end")?"2020":searchParams.get("end")!}
-                            className="form-control block w-3/4 px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                            className="form-control block w-28 px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                             id="EndDate"
                             placeholder="2020"
                             name = "end"
                             pattern="^[0-9]*$"
                           />
                       </div>
-                      <div className="mb-3 w-3/12 flex justify-center">
+                      <div className="w-3/12 flex justify-center mr-6">
                           <input
                             name = "decade"
                             className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
@@ -270,7 +270,7 @@ export default function Graph() {
                             defaultChecked={!searchParams.get("decade") ? false : searchParams.get("decade") === "on"}
                           /> Décennie
                       </div>
-                      <div>
+                      <div className="w-3/12 flex justify-center">
                           <button type="submit"
                                   className="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Valider
                           </button>
